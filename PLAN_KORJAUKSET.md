@@ -85,7 +85,7 @@ FinBERT-tyyppinen raon luokittelija samalla K6-mittarilla. Päätös hybridistä
 
 ## Jatko seuraavassa sessiossa
 
-Työ on haarassa `korjaukset` (ei pushattu). Baseline-commit `b2607ec` on worktreessa
+Työ on `main`-haarassa (commit 9c84132, pushattu origin/mainiin). Baseline-commit `b2607ec` on worktreessa
 `../pylkutus-baseline` (sen `.cache` on symlinkki tämän repon välimuistiin); poisto:
 `git worktree remove ../pylkutus-baseline`.
 
