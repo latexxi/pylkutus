@@ -1,0 +1,399 @@
+####################################################################################################
+# finiittisyys
+====================================================================================================
+Hän lähti, kun hän ei tullut ajoissa.
+   Hän           PRON  nsubj      lähti              Person=3    |   nsubj      lähti
+ * lähti         VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+,  kun           SCONJ mark       tullut                         |   mark       tullut
+   hän           PRON  nsubj      tullut             Person=3    |   nsubj      tullut
+   ei            AUX   aux        tullut        Fin  Person=3,Voice=Act|   aux        tullut
+ * tullut        VERB  advcl      lähti         Part Voice=Act   |   advcl      lähti
+   ajoissa       ADV   advmod     tullut                         |   advmod     tullut
+   .             PUNCT punct      lähti                          |   punct      lähti
+====================================================================================================
+Odotimme, koska hän on lähtenyt jo aamulla.
+ * Odotimme      VERB  root       ROOT          Fin  Person=1,Voice=Act,Mood=Ind|   root       ROOT
+,  koska         SCONJ mark       lähtenyt                       |   mark       lähtenyt
+   hän           PRON  nsubj      lähtenyt           Person=3    |   nsubj      lähtenyt
+   on            AUX   aux        lähtenyt      Fin  Person=3,Voice=Act,Mood=Ind|   aux        lähtenyt
+ * lähtenyt      VERB  advcl      Odotimme      Part Voice=Act   |   advcl      Odotimme
+   jo            ADV   advmod     aamulla                        |   advmod     aamulla
+   aamulla       NOUN  obl        lähtenyt                       |   obl        lähtenyt
+   .             PUNCT punct      Odotimme                       |   punct      Odotimme
+====================================================================================================
+Hän ei ole rikas, vaikka hän on opettaja.
+   Hän           PRON  nsubj:cop  rikas              Person=3    |   nsubj:cop  rikas
+   ei            AUX   aux        rikas         Fin  Person=3,Voice=Act|   aux        rikas
+   ole           AUX   cop        rikas         Fin  Mood=Ind    |   cop        rikas
+ * rikas         ADJ   root       ROOT                           |   root       ROOT
+,  vaikka        SCONJ mark       opettaja                       |   mark       opettaja
+   hän           PRON  nsubj:cop  opettaja           Person=3    |   nsubj:cop  opettaja
+   on            AUX   cop        opettaja      Fin  Person=3,Voice=Act,Mood=Ind|   cop        opettaja
+ * opettaja      NOUN  advcl      rikas                          |   advcl      rikas
+   .             PUNCT punct      rikas                          |   punct      rikas
+====================================================================================================
+Tiedän, että hän ei ole tullut.
+ * Tiedän        VERB  root       ROOT          Fin  Person=1,Voice=Act,Mood=Ind|   root       ROOT
+,  että          SCONJ mark       tullut                         |   mark       tullut
+   hän           PRON  nsubj      tullut             Person=3    |   nsubj      tullut
+   ei            AUX   aux        tullut        Fin  Person=3,Voice=Act|   aux        tullut
+   ole           AUX   aux        tullut        Fin  Mood=Ind    |   aux        tullut
+ * tullut        VERB  ccomp      Tiedän        Part Voice=Act   |   ccomp      Tiedän
+   .             PUNCT punct      Tiedän                         |   punct      Tiedän
+####################################################################################################
+# lauseenvastike
+====================================================================================================
+Kotiin tultuaan hän söi.
+   Kotiin        NOUN  obl        tultuaan                       |   obl        tultuaan
+ * tultuaan      VERB  advcl      söi           Part Voice=Pass  |   advcl      söi
+   hän           PRON  nsubj      söi                Person=3    |   nsubj      söi
+ * söi           VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   .             PUNCT punct      söi                            |   punct      söi
+====================================================================================================
+Hän pyysi neuvoani uskoen, että voin auttaa.
+   Hän           PRON  nsubj      pyysi              Person=3    |   nsubj      pyysi
+ * pyysi         VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   neuvoani      NOUN  obj        pyysi                          |   obj        pyysi
+ * uskoen        VERB  advcl      pyysi         Inf  Voice=Act   |   advcl      pyysi
+,  että          SCONJ mark       auttaa                         |   mark       auttaa
+   voin          AUX   aux        auttaa        Fin  Person=1,Voice=Act,Mood=Ind|   aux        auttaa
+ * auttaa        VERB  ccomp      uskoen        Inf  Voice=Act   |   ccomp      uskoen
+   .             PUNCT punct      pyysi                          |   punct      pyysi
+====================================================================================================
+Ensiksi auttaaksemme ihmisiä kirjoitimme tämän.
+   Ensiksi       ADV   advmod     auttaaksemme                   |   advmod     auttaaksemme
+ * auttaaksemme  VERB  root       ROOT          Fin  Person=1,Voice=Act,Mood=Ind|   root       ROOT
+   ihmisiä       NOUN  nsubj      kirjoitimme                    |   nsubj      kirjoitimme
+ * kirjoitimme   VERB  conj       auttaaksemme  Fin  Person=1,Voice=Act,Mood=Ind|   conj       auttaaksemme
+   tämän         PRON  obj        kirjoitimme                    |   obj        kirjoitimme
+   .             PUNCT punct      auttaaksemme                   |   punct      auttaaksemme
+====================================================================================================
+Asetuttuaan Mikkeliin taiteilija toimi opettajana.
+ * Asetuttuaan   VERB  advcl      toimi         Part Voice=Pass  |   advcl      toimi
+   Mikkeliin     PROPN obl        Asetuttuaan                    |   obl        Asetuttuaan
+   taiteilija    NOUN  nsubj      toimi                          |   nsubj      toimi
+ * toimi         VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   opettajana    NOUN  obl        toimi                          |   obl        toimi
+   .             PUNCT punct      toimi                          |   punct      toimi
+####################################################################################################
+# se_mita
+====================================================================================================
+Se mitä tapahtui, oli outoa.
+   Se            PRON  nsubj:cop  outoa                          | ≠ root       ROOT
+   mitä          PRON  nsubj      tapahtui                       |   nsubj      tapahtui
+ * tapahtui      VERB  acl:relcl  Se            Fin  Person=3,Voice=Act,Mood=Ind|   acl:relcl  Se
+,  oli           AUX   cop        outoa         Fin  Person=3,Voice=Act,Mood=Ind|   cop        outoa
+ * outoa         ADJ   root       ROOT                           | ≠ acl:relcl  Se
+   .             PUNCT punct      outoa                          | ≠ punct      Se
+====================================================================================================
+Mitä tapahtui, oli outoa.
+   Mitä          PRON  nsubj      tapahtui                       | ≠ nsubj:cop  outoa
+ * tapahtui      VERB  csubj:cop  outoa         Fin  Person=0,Voice=Act,Mood=Ind| ≠ root       ROOT
+,  oli           AUX   cop        outoa         Fin  Person=3,Voice=Act,Mood=Ind|   cop        outoa
+ * outoa         ADJ   root       ROOT                           | ≠ xcomp      tapahtui
+   .             PUNCT punct      outoa                          | ≠ punct      tapahtui
+====================================================================================================
+Komitea valitsee sen, joka on pätevin.
+   Komitea       NOUN  nsubj      valitsee                       |   nsubj      valitsee
+ * valitsee      VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   sen           PRON  obj        valitsee                       |   obj        valitsee
+,  joka          PRON  nsubj:cop  pätevin                        |   nsubj:cop  pätevin
+   on            AUX   cop        pätevin       Fin  Person=3,Voice=Act,Mood=Ind|   cop        pätevin
+ * pätevin       ADJ   acl:relcl  sen                            |   acl:relcl  sen
+   .             PUNCT punct      valitsee                       |   punct      valitsee
+====================================================================================================
+Tämä ei ole kenenkään vika, mutta se mitä tapahtuu, on outoa.
+   Tämä          PRON  nsubj:cop  vika                           |   nsubj:cop  vika
+   ei            AUX   aux        vika          Fin  Person=3,Voice=Act|   aux        vika
+   ole           AUX   cop        vika          Fin  Mood=Ind    |   cop        vika
+   kenenkään     PRON  nmod:poss  vika                           |   nmod:poss  vika
+ * vika          NOUN  root       ROOT                           |   root       ROOT
+,  mutta         CCONJ cc         outoa                          | ≠ cc         se
+   se            PRON  nsubj:cop  outoa                          | ≠ conj       vika
+   mitä          PRON  nsubj      tapahtuu                       |   nsubj      tapahtuu
+ * tapahtuu      VERB  acl:relcl  se            Fin  Person=3,Voice=Act,Mood=Ind|   acl:relcl  se
+,  on            AUX   cop        outoa         Fin  Person=3,Voice=Act,Mood=Ind|   cop        outoa
+ * outoa         ADJ   conj       vika                           | ≠ xcomp      tapahtuu
+   .             PUNCT punct      vika                           |   punct      vika
+####################################################################################################
+# subjektiton
+====================================================================================================
+Salilla on hiljaista, mutta viikonloppuisin siellä käy väkeä.
+ * Salilla       NOUN  root       ROOT                           |   root       ROOT
+   on            AUX   cop        Salilla       Fin  Person=3,Voice=Act,Mood=Ind|   cop        Salilla
+ * hiljaista     ADJ   xcomp      Salilla                        | ≠ nsubj:cop  Salilla
+,  mutta         CCONJ cc         käy                            |   cc         käy
+   viikonloppuisinADV   advmod     käy                           |   advmod     käy
+   siellä        ADV   advmod     käy                            |   advmod     käy
+ * käy           VERB  conj       Salilla       Fin  Person=3,Voice=Act,Mood=Ind|   conj       Salilla
+   väkeä         NOUN  nsubj      käy                            |   nsubj      käy
+   .             PUNCT punct      Salilla                        |   punct      Salilla
+====================================================================================================
+Minun täytyy lähteä, ja sinun täytyy jäädä.
+   Minun         PRON  nsubj      lähteä             Person=1    |   nsubj      lähteä
+   täytyy        AUX   aux        lähteä        Fin  Person=3,Voice=Act,Mood=Ind|   aux        lähteä
+ * lähteä        VERB  root       ROOT          Inf  Voice=Act   |   root       ROOT
+,  ja            CCONJ cc         jäädä                          |   cc         jäädä
+   sinun         PRON  nsubj      jäädä              Person=2    |   nsubj      jäädä
+   täytyy        AUX   aux        jäädä         Fin  Person=3,Voice=Act,Mood=Ind|   aux        jäädä
+ * jäädä         VERB  conj       lähteä        Inf  Voice=Act   |   conj       lähteä
+   .             PUNCT punct      lähteä                         |   punct      lähteä
+====================================================================================================
+Sataa, ja tuulee.
+ * Sataa         VERB  root       ROOT          Fin  Person=2,Voice=Act,Mood=Ind|   root       ROOT
+,  ja            CCONJ cc         tuulee                         |   cc         tuulee
+ * tuulee        VERB  conj       Sataa         Fin  Person=3,Voice=Act,Mood=Ind|   conj       Sataa
+   .             PUNCT punct      Sataa                          |   punct      Sataa
+====================================================================================================
+Talo rakennettiin, ja se myytiin.
+   Talo          NOUN  obj        rakennettiin                   |   obj        rakennettiin
+ * rakennettiin  VERB  root       ROOT          Fin  Voice=Pass,Mood=Ind|   root       ROOT
+,  ja            CCONJ cc         myytiin                        |   cc         myytiin
+   se            PRON  obj        myytiin                        |   obj        myytiin
+ * myytiin       VERB  conj       rakennettiin  Fin  Voice=Pass,Mood=Ind|   conj       rakennettiin
+   .             PUNCT punct      rakennettiin                   |   punct      rakennettiin
+####################################################################################################
+# taydellisyys
+====================================================================================================
+Perhe kunnosti saunaa ja viimeisteli keittiön.
+   Perhe         NOUN  nsubj      kunnosti                       |   nsubj      kunnosti
+ * kunnosti      VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   saunaa        NOUN  obj        kunnosti                       |   obj        kunnosti
+   ja            CCONJ cc         viimeisteli                    |   cc         viimeisteli
+ * viimeisteli   VERB  conj       kunnosti      Fin  Person=3,Voice=Act,Mood=Ind|   conj       kunnosti
+   keittiön      NOUN  obj        viimeisteli                    |   obj        viimeisteli
+   .             PUNCT punct      kunnosti                       |   punct      kunnosti
+====================================================================================================
+Kesäkuussa he matkustivat Yhdysvalloissa, ja heinäkuussa he olivat Kanadassa.
+   Kesäkuussa    NOUN  obl        matkustivat                    |   obl        matkustivat
+   he            PRON  nsubj      matkustivat        Person=3    |   nsubj      matkustivat
+ * matkustivat   VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   YhdysvalloissaPROPN obl        matkustivat                    |   obl        matkustivat
+,  ja            CCONJ cc         Kanadassa                      |   cc         Kanadassa
+   heinäkuussa   NOUN  obl        Kanadassa                      |   obl        Kanadassa
+   he            PRON  nsubj:cop  Kanadassa          Person=3    |   nsubj:cop  Kanadassa
+   olivat        AUX   cop        Kanadassa     Fin  Person=3,Voice=Act,Mood=Ind|   cop        Kanadassa
+ * Kanadassa     PROPN conj       matkustivat                    |   conj       matkustivat
+   .             PUNCT punct      matkustivat                    |   punct      matkustivat
+====================================================================================================
+Tulin kotiin ja söin.
+ * Tulin         VERB  root       ROOT          Fin  Person=1,Voice=Act,Mood=Ind|   root       ROOT
+   kotiin        NOUN  obl        Tulin                          |   obl        Tulin
+   ja            CCONJ cc         söin                           |   cc         söin
+ * söin          VERB  conj       Tulin         Fin  Person=1,Voice=Act,Mood=Ind|   conj       Tulin
+   .             PUNCT punct      Tulin                          |   punct      Tulin
+====================================================================================================
+Tämä kauna oli hänen äitiään kohtaan ja se näytti valtavalta.
+   Tämä          PRON  det        kauna                          |   det        kauna
+   kauna         NOUN  nsubj:cop  äitiään                        |   nsubj:cop  äitiään
+   oli           AUX   cop        äitiään       Fin  Person=3,Voice=Act,Mood=Ind|   cop        äitiään
+   hänen         PRON  nmod:poss  äitiään            Person=3    |   nmod:poss  äitiään
+ * äitiään       NOUN  root       ROOT                           |   root       ROOT
+   kohtaan       ADP   case       äitiään                        |   case       äitiään
+   ja            CCONJ cc         näytti                         |   cc         näytti
+   se            PRON  nsubj      näytti                         |   nsubj      näytti
+ * näytti        VERB  conj       äitiään       Fin  Person=3,Voice=Act,Mood=Ind|   conj       äitiään
+ * valtavalta    ADJ   xcomp      näytti                         |   xcomp      näytti
+   .             PUNCT punct      äitiään                        |   punct      äitiään
+====================================================================================================
+Aviomieheni palasi lopulta mutta ei kestänyt kauaa.
+   Aviomieheni   NOUN  nsubj      palasi                         |   nsubj      palasi
+ * palasi        VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   lopulta       ADV   advmod     palasi                         |   advmod     palasi
+   mutta         CCONJ cc         kestänyt                       |   cc         kestänyt
+   ei            AUX   aux        kestänyt      Fin  Person=3,Voice=Act|   aux        kestänyt
+ * kestänyt      VERB  conj       palasi        Part Voice=Act   |   conj       palasi
+   kauaa         ADV   advmod     kestänyt                       |   advmod     kestänyt
+   .             PUNCT punct      palasi                         |   punct      palasi
+####################################################################################################
+# loppupilkku
+====================================================================================================
+Kun tulin kotiin, söin.
+   Kun           SCONJ mark       tulin                          |   mark       tulin
+ * tulin         VERB  advcl      söin          Fin  Person=1,Voice=Act,Mood=Ind|   advcl      söin
+   kotiin        NOUN  obl        tulin                          |   obl        tulin
+,* söin          VERB  root       ROOT          Fin  Person=1,Voice=Act,Mood=Ind|   root       ROOT
+   .             PUNCT punct      söin                           |   punct      söin
+====================================================================================================
+Hän sanoi, että jos ehtii, hän tulee.
+   Hän           PRON  nsubj      sanoi              Person=3    |   nsubj      sanoi
+ * sanoi         VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+,  että          SCONJ mark       tulee                          | ≠ mark       ehtii
+   jos           SCONJ mark       ehtii                          |   mark       ehtii
+ * ehtii         VERB  advcl      tulee         Fin  Person=0,Voice=Act,Mood=Ind| ≠ ccomp      sanoi
+,  hän           PRON  nsubj      tulee              Person=3    | ≠ nsubj      ehtii
+ * tulee         VERB  ccomp      sanoi         Fin  Person=3,Voice=Act,Mood=Ind| ≠ xcomp      ehtii
+   .             PUNCT punct      sanoi                          |   punct      sanoi
+====================================================================================================
+Pelaajat, joiden nimiä ei mainittu, neuvottelevat.
+   Pelaajat      NOUN  nsubj      neuvottelevat                  | ≠ root       ROOT
+,  joiden        PRON  nmod:poss  nimiä                          |   nmod:poss  nimiä
+   nimiä         NOUN  obj        mainittu                       | ≠ nsubj      neuvottelevat
+   ei            AUX   aux        mainittu      Fin  Person=3,Voice=Act|   aux        mainittu
+ * mainittu      VERB  acl:relcl  Pelaajat      Part Voice=Pass  |   acl:relcl  Pelaajat
+,* neuvottelevat VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind| ≠ acl:relcl  Pelaajat
+   .             PUNCT punct      neuvottelevat                  | ≠ punct      Pelaajat
+####################################################################################################
+# epasuora_kysymys
+====================================================================================================
+Emme tienneet, oliko se normaalia.
+   Emme          AUX   aux        tienneet      Fin  Person=1,Voice=Act|   aux        tienneet
+ * tienneet      VERB  root       ROOT          Part Voice=Act   |   root       ROOT
+,  oliko         AUX   cop        normaalia     Fin  Person=3,Voice=Act,Mood=Ind|   cop        normaalia
+   se            PRON  nsubj:cop  normaalia                      |   nsubj:cop  normaalia
+ * normaalia     ADJ   ccomp      tienneet                       |   ccomp      tienneet
+   .             PUNCT punct      tienneet                       |   punct      tienneet
+====================================================================================================
+Tämä auttaa sinua näkemään, mistä vihasi tulee.
+   Tämä          PRON  nsubj      auttaa                         |   nsubj      auttaa
+ * auttaa        VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   sinua         PRON  nsubj      näkemään           Person=2    |   nsubj      näkemään
+ * näkemään      VERB  xcomp:ds   auttaa        Inf  Voice=Act   |   xcomp:ds   auttaa
+,  mistä         PRON  obl        tulee                          |   obl        tulee
+   vihasi        VERB  nsubj      tulee         Fin  Person=3,Voice=Act,Mood=Ind|   nsubj      tulee
+ * tulee         VERB  ccomp      näkemään      Fin  Person=3,Voice=Act,Mood=Ind|   ccomp      näkemään
+   .             PUNCT punct      auttaa                         |   punct      auttaa
+====================================================================================================
+Kukaan ei tiedä, missä hän asuu.
+   Kukaan        PRON  nsubj      tiedä                          |   nsubj      tiedä
+   ei            AUX   aux        tiedä         Fin  Person=3,Voice=Act|   aux        tiedä
+ * tiedä         VERB  root       ROOT          Fin  Mood=Ind    |   root       ROOT
+,  missä         PRON  obl        asuu                           |   obl        asuu
+   hän           PRON  nsubj      asuu               Person=3    |   nsubj      asuu
+ * asuu          VERB  ccomp      tiedä         Fin  Person=3,Voice=Act,Mood=Ind|   ccomp      tiedä
+   .             PUNCT punct      tiedä                          |   punct      tiedä
+####################################################################################################
+# ab_ero
+====================================================================================================
+Tämä ei tietenkään ole kenenkään vika — mutta se mitä tapahtuu, on että jotkut vanhemmat toipuneet jäsenet eivät enää tunne samaistuvansa näiden ihmisten kanssa ja ovat aika väsyneitä kuuntelemaan heidän juttujaan, joten he jäävät kotiin.
+   Tämä          PRON  nsubj:cop  vika                           |   nsubj:cop  vika
+   ei            AUX   aux        vika          Fin  Person=3,Voice=Act|   aux        vika
+   tietenkään    ADV   advmod     vika                           |   advmod     vika
+   ole           AUX   cop        vika          Fin  Mood=Ind    |   cop        vika
+   kenenkään     PRON  nmod:poss  vika                           |   nmod:poss  vika
+ * vika          NOUN  root       ROOT                           |   root       ROOT
+   —             PUNCT punct      on                             | ≠ punct      se
+   mutta         CCONJ cc         on                             | ≠ cc         se
+   se            PRON  nsubj      on                             | ≠ conj       vika
+   mitä          PRON  nsubj      tapahtuu                       |   nsubj      tapahtuu
+ * tapahtuu      VERB  acl:relcl  se            Fin  Person=3,Voice=Act,Mood=Ind|   acl:relcl  se
+,* on            AUX   conj       vika          Fin  Person=3,Voice=Act,Mood=Ind| ≠ cop        tunne
+   että          SCONJ mark       tunne                          |   mark       tunne
+   jotkut        PRON  det        jäsenet                        |   det        jäsenet
+   vanhemmat     NOUN  obl        toipuneet                      |   obl        toipuneet
+ * toipuneet     VERB  acl        jäsenet       Part Voice=Act   |   acl        jäsenet
+   jäsenet       NOUN  nsubj      tunne                          |   nsubj      tunne
+   eivät         AUX   aux        tunne         Fin  Person=3,Voice=Act|   aux        tunne
+   enää          ADV   advmod     tunne                          |   advmod     tunne
+ * tunne         VERB  ccomp      on            Fin  Mood=Ind    | ≠ ccomp      se
+ * samaistuvansa VERB  xcomp      tunne         Part Voice=Act   |   xcomp      tunne
+   näiden        PRON  det        ihmisten                       |   det        ihmisten
+   ihmisten      NOUN  obl        samaistuvansa                  |   obl        samaistuvansa
+   kanssa        ADP   case       ihmisten                       |   case       ihmisten
+   ja            CCONJ cc         väsyneitä                      |   cc         väsyneitä
+   ovat          AUX   cop        väsyneitä     Fin  Person=3,Voice=Act,Mood=Ind|   cop        väsyneitä
+   aika          ADV   advmod     väsyneitä                      |   advmod     väsyneitä
+ * väsyneitä     ADJ   conj       tunne                          |   conj       tunne
+ * kuuntelemaan  VERB  xcomp      väsyneitä     Inf  Voice=Act   |   xcomp      väsyneitä
+   heidän        PRON  nmod:poss  juttujaan          Person=3    |   nmod:poss  juttujaan
+   juttujaan     NOUN  obj        kuuntelemaan                   |   obj        kuuntelemaan
+,  joten         ADV   advmod     jäävät                         |   advmod     jäävät
+   he            PRON  nsubj      jäävät             Person=3    |   nsubj      jäävät
+ * jäävät        VERB  acl:relcl  väsyneitä     Fin  Person=3,Voice=Act,Mood=Ind|   acl:relcl  väsyneitä
+   kotiin        NOUN  obl        jäävät                         |   obl        jäävät
+   .             PUNCT punct      vika                           |   punct      vika
+====================================================================================================
+Hän vastasi, että hänestä tuntuu kuin hän olisi syntynyt uudelleen.
+   Hän           PRON  nsubj      vastasi            Person=3    |   nsubj      vastasi
+ * vastasi       VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+,  että          SCONJ mark       tuntuu                         |   mark       tuntuu
+   hänestä       PRON  obl        tuntuu             Person=3    |   obl        tuntuu
+ * tuntuu        VERB  ccomp      vastasi       Fin  Person=0,Voice=Act,Mood=Ind|   ccomp      vastasi
+   kuin          SCONJ mark       syntynyt                       |   mark       syntynyt
+   hän           PRON  nsubj      syntynyt           Person=3    |   nsubj      syntynyt
+   olisi         AUX   aux        syntynyt      Fin  Person=3,Voice=Act,Mood=Cnd|   aux        syntynyt
+ * syntynyt      VERB  advcl      tuntuu        Part Voice=Act   |   advcl      tuntuu
+   uudelleen     ADV   advmod     syntynyt                       |   advmod     syntynyt
+   .             PUNCT punct      vastasi                        |   punct      vastasi
+====================================================================================================
+Aviomieheni palasi lopulta mutta ei kestänyt kauaa, kun ymmärsin totuuden.
+   Aviomieheni   NOUN  nsubj      palasi                         |   nsubj      palasi
+ * palasi        VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   lopulta       ADV   advmod     palasi                         |   advmod     palasi
+   mutta         CCONJ cc         kestänyt                       |   cc         kestänyt
+   ei            AUX   aux        kestänyt      Fin  Person=3,Voice=Act|   aux        kestänyt
+ * kestänyt      VERB  conj       palasi        Part Voice=Act   |   conj       palasi
+   kauaa         ADV   advmod     kestänyt                       |   advmod     kestänyt
+,  kun           SCONJ mark       ymmärsin                       |   mark       ymmärsin
+ * ymmärsin      VERB  advcl      kestänyt      Fin  Person=1,Voice=Act,Mood=Ind|   advcl      kestänyt
+   totuuden      NOUN  obj        ymmärsin                       |   obj        ymmärsin
+   .             PUNCT punct      palasi                         |   punct      palasi
+====================================================================================================
+Tee se joka päivä kahden viikon ajan, ja katso mitä tapahtuu.
+ * Tee           VERB  root       ROOT          Fin  Person=2,Voice=Act,Mood=Imp|   root       ROOT
+   se            PRON  obj        Tee                            |   obj        Tee
+   joka          PRON  det        päivä                          |   det        päivä
+   päivä         NOUN  obl        Tee                            |   obl        Tee
+   kahden        NUM   nummod     viikon                         |   nummod     viikon
+   viikon        NOUN  nmod:poss  ajan                           |   nmod:poss  ajan
+   ajan          NOUN  obl        Tee                            |   obl        Tee
+,  ja            CCONJ cc         katso                          |   cc         katso
+ * katso         VERB  conj       Tee           Fin  Person=2,Voice=Act,Mood=Imp|   conj       Tee
+   mitä          PRON  nsubj      tapahtuu                       |   nsubj      tapahtuu
+ * tapahtuu      VERB  ccomp      katso         Fin  Person=3,Voice=Act,Mood=Ind|   ccomp      katso
+   .             PUNCT punct      Tee                            |   punct      Tee
+####################################################################################################
+# otos_virheet
+====================================================================================================
+Heti kun alat maksaa takaisin ihmisille, niihin ihmisiin liittyvät pelkosi ja velkasi katoavat.
+   Heti          ADV   advmod     kun                            |   advmod     kun
+   kun           SCONJ mark       alat                           |   mark       alat
+ * alat          VERB  advcl      katoavat      Fin  Person=2,Voice=Act,Mood=Ind|   advcl      katoavat
+ * maksaa        VERB  xcomp      alat          Inf  Voice=Act   |   xcomp      alat
+   takaisin      ADV   advmod     maksaa                         |   advmod     maksaa
+   ihmisille     NOUN  nmod       takaisin                       |   nmod       takaisin
+,  niihin        PRON  det        ihmisiin                       |   det        ihmisiin
+   ihmisiin      NOUN  obl        liittyvät                      |   obl        liittyvät
+ * liittyvät     VERB  acl        pelkosi       Fin  Person=3,Voice=Act,Mood=Ind|   acl        pelkosi
+   pelkosi       NOUN  nsubj      katoavat                       | ≠ obj        maksaa
+   ja            CCONJ cc         velkasi                        | ≠ cc         katoavat
+ * velkasi       NOUN  conj       pelkosi                        | ≠ nsubj      katoavat
+ * katoavat      VERB  root       ROOT          Fin  Person=3,Voice=Act,Mood=Ind|   root       ROOT
+   .             PUNCT punct      katoavat                       |   punct      katoavat
+====================================================================================================
+Hän on jo tehnyt sinulle kaiken pahimman mahdollisen vastustamalla tapaamistanne ja jos hän on tehnyt pahimpansa ja sinä olet tehnyt parhaimpasi, niin ei ole mitään syytä pelätä häntä enää, jolloin häneen liittyvä pelko häviää.
+   Hän           PRON  nsubj      tehnyt             Person=3    |   nsubj      tehnyt
+   on            AUX   aux        tehnyt        Fin  Person=3,Voice=Act,Mood=Ind|   aux        tehnyt
+   jo            ADV   advmod     tehnyt                         |   advmod     tehnyt
+ * tehnyt        VERB  root       ROOT          Part Voice=Act   |   root       ROOT
+   sinulle       PRON  obl        tehnyt             Person=2    |   obl        tehnyt
+   kaiken        PRON  det        mahdollisen                    |   det        mahdollisen
+   pahimman      ADJ   amod       mahdollisen                    |   amod       mahdollisen
+   mahdollisen   ADJ   nsubj      vastustamalla                  | ≠ obj        tehnyt
+ * vastustamalla VERB  advcl      tehnyt        Inf  Voice=Act   |   advcl      tehnyt
+   tapaamistanne NOUN  obj        vastustamalla                  |   obj        vastustamalla
+   ja            CCONJ cc         syytä                          |   cc         syytä
+   jos           SCONJ mark       tehnyt                         |   mark       tehnyt
+   hän           PRON  nsubj      tehnyt             Person=3    |   nsubj      tehnyt
+   on            AUX   aux        tehnyt        Fin  Person=3,Voice=Act,Mood=Ind|   aux        tehnyt
+ * tehnyt        VERB  advcl      syytä         Part Voice=Act   |   advcl      syytä
+   pahimpansa    ADJ   obj        tehnyt                         |   obj        tehnyt
+   ja            CCONJ cc         tehnyt                         |   cc         tehnyt
+   sinä          PRON  nsubj      tehnyt             Person=2    |   nsubj      tehnyt
+   olet          AUX   aux        tehnyt        Fin  Person=2,Voice=Act,Mood=Ind|   aux        tehnyt
+ * tehnyt        VERB  conj       tehnyt        Part Voice=Act   |   conj       tehnyt
+   parhaimpasi   ADJ   obj        tehnyt                         |   obj        tehnyt
+,  niin          ADV   advmod     syytä                          |   advmod     syytä
+   ei            AUX   aux        syytä         Fin  Person=3,Voice=Act|   aux        syytä
+   ole           AUX   cop        syytä         Fin  Mood=Ind    |   cop        syytä
+   mitään        PRON  det        syytä                          |   det        syytä
+ * syytä         NOUN  conj       tehnyt                         |   conj       tehnyt
+ * pelätä        VERB  xcomp:ds   syytä         Inf  Voice=Act   |   xcomp:ds   syytä
+   häntä         PRON  obj        pelätä             Person=3    |   obj        pelätä
+   enää          ADV   advmod     pelätä                         |   advmod     pelätä
+,  jolloin       ADV   advmod     häviää                         |   advmod     häviää
+   häneen        PRON  obl        liittyvä           Person=3    |   obl        liittyvä
+ * liittyvä      VERB  acl        pelko         Part Voice=Act   |   acl        pelko
+   pelko         NOUN  nsubj      häviää                         |   nsubj      häviää
+ * häviää        VERB  acl:relcl  pelätä        Fin  Person=3,Voice=Act,Mood=Ind|   acl:relcl  pelätä
+   .             PUNCT punct      tehnyt                         |   punct      tehnyt

@@ -1,0 +1,350 @@
+# stanza=1.14.0 torch=2.14.0+cu130 malli=fi/default virkejako=2
+# jasennys = B
+1	Hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	2	nsubj	_	start_char=0|end_char=3
+2	lähti	lähteä	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=4|end_char=9
+3	kun	kun	SCONJ	C	_	6	mark	_	start_char=11|end_char=14
+4	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	6	nsubj	_	start_char=15|end_char=18
+5	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	6	aux	_	start_char=19|end_char=21
+6	tullut	tulla	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	2	advcl	_	start_char=22|end_char=28
+7	ajoissa	ajoissa	ADV	Adv	_	6	advmod	_	start_char=29|end_char=36
+8	.	.	PUNCT	Punct	_	2	punct	_	start_char=36|end_char=37
+
+1	Odotimme	odottaa	VERB	V	Mood=Ind|Number=Plur|Person=1|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=39|end_char=47
+2	koska	koska	SCONJ	C	_	5	mark	_	start_char=49|end_char=54
+3	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	5	nsubj	_	start_char=55|end_char=58
+4	on	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	5	aux	_	start_char=59|end_char=61
+5	lähtenyt	lähteä	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	1	advcl	_	start_char=62|end_char=70
+6	jo	jo	ADV	Adv	_	7	advmod	_	start_char=71|end_char=73
+7	aamulla	aamu	NOUN	N	Case=Ade|Number=Sing	5	obl	_	start_char=74|end_char=81
+8	.	.	PUNCT	Punct	_	1	punct	_	start_char=81|end_char=82
+
+1	Hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	4	nsubj:cop	_	start_char=84|end_char=87
+2	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	4	aux	_	start_char=88|end_char=90
+3	ole	olla	AUX	V	Connegative=Yes|Mood=Ind|Tense=Pres|VerbForm=Fin	4	cop	_	start_char=91|end_char=94
+4	rikas	rikas	ADJ	A	Case=Nom|Degree=Pos|Number=Sing	0	root	_	start_char=95|end_char=100
+5	vaikka	vaikka	SCONJ	C	_	8	mark	_	start_char=102|end_char=108
+6	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	8	nsubj:cop	_	start_char=109|end_char=112
+7	on	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	8	cop	_	start_char=113|end_char=115
+8	opettaja	opettaja	NOUN	N	Case=Nom|Derivation=Ja|Number=Sing	4	advcl	_	start_char=116|end_char=124
+9	.	.	PUNCT	Punct	_	4	punct	_	start_char=124|end_char=125
+
+1	Tiedän	tietää	VERB	V	Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin|Voice=Act	0	root	_	start_char=127|end_char=133
+2	että	että	SCONJ	C	_	6	mark	_	start_char=135|end_char=139
+3	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	6	nsubj	_	start_char=140|end_char=143
+4	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	6	aux	_	start_char=144|end_char=146
+5	ole	olla	AUX	V	Connegative=Yes|Mood=Ind|Tense=Pres|VerbForm=Fin	6	aux	_	start_char=147|end_char=150
+6	tullut	tulla	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	1	ccomp	_	start_char=151|end_char=157
+7	.	.	PUNCT	Punct	_	1	punct	_	start_char=157|end_char=158
+
+1	Kotiin	koti	NOUN	N	Case=Ill|Number=Sing	2	obl	_	start_char=160|end_char=166
+2	tultuaan	tulla	VERB	V	Case=Par|Number=Sing|PartForm=Past|Person[psor]=3|VerbForm=Part|Voice=Pass	4	advcl	_	start_char=167|end_char=175
+3	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	4	nsubj	_	start_char=176|end_char=179
+4	söi	syödä	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=180|end_char=183
+5	.	.	PUNCT	Punct	_	4	punct	_	start_char=183|end_char=184
+
+1	Hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	2	nsubj	_	start_char=186|end_char=189
+2	pyysi	pyytää	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=190|end_char=195
+3	neuvoani	neuvo	NOUN	N	Case=Par|Number=Sing|Number[psor]=Sing|Person[psor]=1	2	obj	_	start_char=196|end_char=204
+4	uskoen	uskoa	VERB	V	Case=Ins|InfForm=2|Number=Sing|VerbForm=Inf|Voice=Act	2	advcl	_	start_char=205|end_char=211
+5	että	että	SCONJ	C	_	7	mark	_	start_char=213|end_char=217
+6	voin	voida	AUX	V	Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin|Voice=Act	7	aux	_	start_char=218|end_char=222
+7	auttaa	auttaa	VERB	V	InfForm=1|Number=Sing|VerbForm=Inf|Voice=Act	4	ccomp	_	start_char=223|end_char=229
+8	.	.	PUNCT	Punct	_	2	punct	_	start_char=229|end_char=230
+
+1	Ensiksi	ensiksi	ADV	Adv	_	2	advmod	_	start_char=232|end_char=239
+2	auttaaksemme	auttaa	VERB	V	Mood=Ind|Number=Sing|Person=1|VerbForm=Fin|Voice=Act	0	root	_	start_char=240|end_char=252
+3	ihmisiä	ihminen	NOUN	N	Case=Par|Number=Plur	4	nsubj	_	start_char=253|end_char=260
+4	kirjoitimme	kirjoittaa	VERB	V	Mood=Ind|Number=Plur|Person=1|Tense=Past|VerbForm=Fin|Voice=Act	2	conj	_	start_char=261|end_char=272
+5	tämän	tämä	PRON	Pron	Case=Gen|Number=Sing|PronType=Dem	4	obj	_	start_char=273|end_char=278
+6	.	.	PUNCT	Punct	_	2	punct	_	start_char=278|end_char=279
+
+1	Asetuttuaan	asettua	VERB	V	Case=Par|Number=Sing|PartForm=Past|Person[psor]=3|VerbForm=Part|Voice=Pass	4	advcl	_	start_char=281|end_char=292
+2	Mikkeliin	Mikkeli	PROPN	N	Case=Ill|Number=Sing	1	obl	_	start_char=293|end_char=302
+3	taiteilija	taiteilija	NOUN	N	Case=Nom|Derivation=Ja|Number=Sing	4	nsubj	_	start_char=303|end_char=313
+4	toimi	toimia	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=314|end_char=319
+5	opettajana	opettaja	NOUN	N	Case=Ess|Derivation=Ja|Number=Sing	4	obl	_	start_char=320|end_char=330
+6	.	.	PUNCT	Punct	_	4	punct	_	start_char=330|end_char=331
+
+1	Se	se	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	0	root	_	start_char=333|end_char=335
+2	mitä	mikä	PRON	Pron	Case=Par|Number=Sing|PronType=Rel	3	nsubj	_	start_char=336|end_char=340
+3	tapahtui	tapahtua	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	1	acl:relcl	_	start_char=341|end_char=349
+4	oli	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	5	cop	_	start_char=351|end_char=354
+5	outoa	outo	ADJ	A	Case=Par|Degree=Pos|Number=Sing	1	acl:relcl	_	start_char=355|end_char=360
+6	.	.	PUNCT	Punct	_	1	punct	_	start_char=360|end_char=361
+
+1	Mitä	mikä	PRON	Pron	Case=Par|Number=Sing|PronType=Int	4	nsubj:cop	_	start_char=363|end_char=367
+2	tapahtui	tapahtua	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=368|end_char=376
+3	oli	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	4	cop	_	start_char=378|end_char=381
+4	outoa	outo	ADJ	A	Case=Par|Degree=Pos|Number=Sing	2	xcomp	_	start_char=382|end_char=387
+5	.	.	PUNCT	Punct	_	2	punct	_	start_char=387|end_char=388
+
+1	Komitea	komitea	NOUN	N	Case=Nom|Number=Sing	2	nsubj	_	start_char=390|end_char=397
+2	valitsee	valita	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	0	root	_	start_char=398|end_char=406
+3	sen	se	PRON	Pron	Case=Gen|Number=Sing|PronType=Dem	2	obj	_	start_char=407|end_char=410
+4	joka	joka	PRON	Pron	Case=Nom|Number=Sing|PronType=Rel	6	nsubj:cop	_	start_char=412|end_char=416
+5	on	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	6	cop	_	start_char=417|end_char=419
+6	pätevin	pätevä	ADJ	A	Case=Nom|Degree=Sup|Number=Sing	3	acl:relcl	_	start_char=420|end_char=427
+7	.	.	PUNCT	Punct	_	2	punct	_	start_char=427|end_char=428
+
+1	Tämä	tämä	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	5	nsubj:cop	_	start_char=430|end_char=434
+2	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	5	aux	_	start_char=435|end_char=437
+3	ole	olla	AUX	V	Connegative=Yes|Mood=Ind|Tense=Pres|VerbForm=Fin	5	cop	_	start_char=438|end_char=441
+4	kenenkään	kukaan	PRON	Pron	Case=Gen|Number=Sing|PronType=Ind	5	nmod:poss	_	start_char=442|end_char=451
+5	vika	vika	NOUN	N	Case=Nom|Number=Sing	0	root	_	start_char=452|end_char=456
+6	mutta	mutta	CCONJ	C	_	7	cc	_	start_char=458|end_char=463
+7	se	se	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	5	conj	_	start_char=464|end_char=466
+8	mitä	mikä	PRON	Pron	Case=Par|Number=Sing|PronType=Rel	9	nsubj	_	start_char=467|end_char=471
+9	tapahtuu	tapahtua	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	7	acl:relcl	_	start_char=472|end_char=480
+10	on	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	11	cop	_	start_char=482|end_char=484
+11	outoa	outo	ADJ	A	Case=Par|Degree=Pos|Number=Sing	9	xcomp	_	start_char=485|end_char=490
+12	.	.	PUNCT	Punct	_	5	punct	_	start_char=490|end_char=491
+
+1	Salilla	sali	NOUN	N	Case=Ade|Number=Sing	0	root	_	start_char=493|end_char=500
+2	on	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	1	cop	_	start_char=501|end_char=503
+3	hiljaista	hiljainen	ADJ	A	Case=Par|Degree=Pos|Derivation=Inen|Number=Sing	1	nsubj:cop	_	start_char=504|end_char=513
+4	mutta	mutta	CCONJ	C	_	7	cc	_	start_char=515|end_char=520
+5	viikonloppuisin	viikon#loppuisin	ADV	Adv	_	7	advmod	_	start_char=521|end_char=536
+6	siellä	siellä	ADV	Adv	_	7	advmod	_	start_char=537|end_char=543
+7	käy	käydä	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	1	conj	_	start_char=544|end_char=547
+8	väkeä	väki	NOUN	N	Case=Par|Number=Sing	7	nsubj	_	start_char=548|end_char=553
+9	.	.	PUNCT	Punct	_	1	punct	_	start_char=553|end_char=554
+
+1	Minun	minä	PRON	Pron	Case=Gen|Number=Sing|Person=1|PronType=Prs	3	nsubj	_	start_char=556|end_char=561
+2	täytyy	täytyä	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	3	aux	_	start_char=562|end_char=568
+3	lähteä	lähteä	VERB	V	InfForm=1|Number=Sing|VerbForm=Inf|Voice=Act	0	root	_	start_char=569|end_char=575
+4	ja	ja	CCONJ	C	_	7	cc	_	start_char=577|end_char=579
+5	sinun	sinä	PRON	Pron	Case=Gen|Number=Sing|Person=2|PronType=Prs	7	nsubj	_	start_char=580|end_char=585
+6	täytyy	täytyä	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	7	aux	_	start_char=586|end_char=592
+7	jäädä	jäädä	VERB	V	InfForm=1|Number=Sing|VerbForm=Inf|Voice=Act	3	conj	_	start_char=593|end_char=598
+8	.	.	PUNCT	Punct	_	3	punct	_	start_char=598|end_char=599
+
+1	Sataa	sataa	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	0	root	_	start_char=601|end_char=606
+2	ja	ja	CCONJ	C	_	3	cc	_	start_char=608|end_char=610
+3	tuulee	tuulea	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	1	conj	_	start_char=611|end_char=617
+4	.	.	PUNCT	Punct	_	1	punct	_	start_char=617|end_char=618
+
+1	Talo	talo	NOUN	N	Case=Nom|Number=Sing	2	obj	_	start_char=620|end_char=624
+2	rakennettiin	rakentaa	VERB	V	Mood=Ind|Tense=Past|VerbForm=Fin|Voice=Pass	0	root	_	start_char=625|end_char=637
+3	ja	ja	CCONJ	C	_	5	cc	_	start_char=639|end_char=641
+4	se	se	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	5	obj	_	start_char=642|end_char=644
+5	myytiin	myydä	VERB	V	Mood=Ind|Tense=Past|VerbForm=Fin|Voice=Pass	2	conj	_	start_char=645|end_char=652
+6	.	.	PUNCT	Punct	_	2	punct	_	start_char=652|end_char=653
+
+1	Perhe	perhe	NOUN	N	Case=Nom|Number=Sing	2	nsubj	_	start_char=655|end_char=660
+2	kunnosti	kunnostaa	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=661|end_char=669
+3	saunaa	sauna	NOUN	N	Case=Par|Number=Sing	2	obj	_	start_char=670|end_char=676
+4	ja	ja	CCONJ	C	_	5	cc	_	start_char=677|end_char=679
+5	viimeisteli	viimeistellä	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	2	conj	_	start_char=680|end_char=691
+6	keittiön	keittiö	NOUN	N	Case=Gen|Number=Sing	5	obj	_	start_char=692|end_char=700
+7	.	.	PUNCT	Punct	_	2	punct	_	start_char=700|end_char=701
+
+1	Kesäkuussa	kesäkuu	NOUN	N	Case=Ine|Number=Sing	3	obl	_	start_char=703|end_char=713
+2	he	hän	PRON	Pron	Case=Nom|Number=Plur|Person=3|PronType=Prs	3	nsubj	_	start_char=714|end_char=716
+3	matkustivat	matkustaa	VERB	V	Mood=Ind|Number=Plur|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=717|end_char=728
+4	Yhdysvalloissa	Yhdysvallat	PROPN	N	Case=Ine|Number=Plur	3	obl	_	start_char=729|end_char=743
+5	ja	ja	CCONJ	C	_	9	cc	_	start_char=745|end_char=747
+6	heinäkuussa	heinäkuu	NOUN	N	Case=Ine|Number=Sing	9	obl	_	start_char=748|end_char=759
+7	he	hän	PRON	Pron	Case=Nom|Number=Plur|Person=3|PronType=Prs	9	nsubj:cop	_	start_char=760|end_char=762
+8	olivat	olla	AUX	V	Mood=Ind|Number=Plur|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	9	cop	_	start_char=763|end_char=769
+9	Kanadassa	Kanada	PROPN	N	Case=Ine|Number=Sing	3	conj	_	start_char=770|end_char=779
+10	.	.	PUNCT	Punct	_	3	punct	_	start_char=779|end_char=780
+
+1	Tulin	tulla	VERB	V	Mood=Ind|Number=Sing|Person=1|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=782|end_char=787
+2	kotiin	koti	NOUN	N	Case=Ill|Number=Sing	1	obl	_	start_char=788|end_char=794
+3	ja	ja	CCONJ	C	_	4	cc	_	start_char=795|end_char=797
+4	söin	syödä	VERB	V	Mood=Ind|Number=Sing|Person=1|Tense=Past|VerbForm=Fin|Voice=Act	1	conj	_	start_char=798|end_char=802
+5	.	.	PUNCT	Punct	_	1	punct	_	start_char=802|end_char=803
+
+1	Tämä	tämä	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	2	det	_	start_char=805|end_char=809
+2	kauna	kauna	NOUN	N	Case=Nom|Number=Sing	5	nsubj:cop	_	start_char=810|end_char=815
+3	oli	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	5	cop	_	start_char=816|end_char=819
+4	hänen	hän	PRON	Pron	Case=Gen|Number=Sing|Person=3|PronType=Prs	5	nmod:poss	_	start_char=820|end_char=825
+5	äitiään	äiti	NOUN	N	Case=Par|Number=Sing|Person[psor]=3	0	root	_	start_char=826|end_char=833
+6	kohtaan	kohtaan	ADP	Adp	AdpType=Post	5	case	_	start_char=834|end_char=841
+7	ja	ja	CCONJ	C	_	9	cc	_	start_char=842|end_char=844
+8	se	se	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	9	nsubj	_	start_char=845|end_char=847
+9	näytti	näyttää	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	5	conj	_	start_char=848|end_char=854
+10	valtavalta	valtava	ADJ	A	Case=Abl|Degree=Pos|Number=Sing	9	xcomp	_	start_char=855|end_char=865
+11	.	.	PUNCT	Punct	_	5	punct	_	start_char=865|end_char=866
+
+1	Aviomieheni	avio#mies	NOUN	N	Case=Nom|Number=Sing|Number[psor]=Sing|Person[psor]=1	2	nsubj	_	start_char=868|end_char=879
+2	palasi	palata	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=880|end_char=886
+3	lopulta	lopulta	ADV	Adv	_	2	advmod	_	start_char=887|end_char=894
+4	mutta	mutta	CCONJ	C	_	6	cc	_	start_char=895|end_char=900
+5	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	6	aux	_	start_char=901|end_char=903
+6	kestänyt	kestää	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	2	conj	_	start_char=904|end_char=912
+7	kauaa	kauaa	ADV	Adv	_	6	advmod	_	start_char=913|end_char=918
+8	.	.	PUNCT	Punct	_	2	punct	_	start_char=918|end_char=919
+
+1	Kun	kun	SCONJ	C	_	2	mark	_	start_char=921|end_char=924
+2	tulin	tulla	VERB	V	Mood=Ind|Number=Sing|Person=1|Tense=Past|VerbForm=Fin|Voice=Act	4	advcl	_	start_char=925|end_char=930
+3	kotiin	koti	NOUN	N	Case=Ill|Number=Sing	2	obl	_	start_char=931|end_char=937
+4	söin	syödä	VERB	V	Mood=Ind|Number=Sing|Person=1|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=939|end_char=943
+5	.	.	PUNCT	Punct	_	4	punct	_	start_char=943|end_char=944
+
+1	Hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	2	nsubj	_	start_char=946|end_char=949
+2	sanoi	sanoa	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=950|end_char=955
+3	että	että	SCONJ	C	_	5	mark	_	start_char=957|end_char=961
+4	jos	jos	SCONJ	C	_	5	mark	_	start_char=962|end_char=965
+5	ehtii	ehtiä	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	2	ccomp	_	start_char=966|end_char=971
+6	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	5	nsubj	_	start_char=973|end_char=976
+7	tulee	tulla	VERB	V	InfForm=1|Number=Sing|VerbForm=Inf|Voice=Act	5	xcomp	_	start_char=977|end_char=982
+8	.	.	PUNCT	Punct	_	2	punct	_	start_char=982|end_char=983
+
+1	Pelaajat	pelaaja	NOUN	N	Case=Nom|Derivation=Ja|Number=Plur	0	root	_	start_char=985|end_char=993
+2	joiden	joka	PRON	Pron	Case=Gen|Number=Plur|PronType=Rel	3	nmod:poss	_	start_char=995|end_char=1001
+3	nimiä	nimi	NOUN	N	Case=Par|Number=Plur	6	nsubj	_	start_char=1002|end_char=1007
+4	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	5	aux	_	start_char=1008|end_char=1010
+5	mainittu	mainita	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Pass	1	acl:relcl	_	start_char=1011|end_char=1019
+6	neuvottelevat	neuvotella	VERB	V	Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	1	acl:relcl	_	start_char=1021|end_char=1034
+7	.	.	PUNCT	Punct	_	1	punct	_	start_char=1034|end_char=1035
+
+1	Emme	ei	AUX	V	Number=Plur|Person=1|Polarity=Neg|VerbForm=Fin|Voice=Act	2	aux	_	start_char=1037|end_char=1041
+2	tienneet	tietää	VERB	V	Case=Nom|Number=Plur|PartForm=Past|VerbForm=Part|Voice=Act	0	root	_	start_char=1042|end_char=1050
+3	oliko	olla	AUX	V	Clitic=Ko|Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	5	cop	_	start_char=1052|end_char=1057
+4	se	se	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	5	nsubj:cop	_	start_char=1058|end_char=1060
+5	normaalia	normaali	ADJ	A	Case=Par|Degree=Pos|Number=Sing	2	ccomp	_	start_char=1061|end_char=1070
+6	.	.	PUNCT	Punct	_	2	punct	_	start_char=1070|end_char=1071
+
+1	Tämä	tämä	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	2	nsubj	_	start_char=1073|end_char=1077
+2	auttaa	auttaa	VERB	V	InfForm=1|Number=Sing|Person=3|VerbForm=Fin|Voice=Act	0	root	_	start_char=1078|end_char=1084
+3	sinua	sinä	PRON	Pron	Case=Par|Number=Sing|Person=2|PronType=Prs	4	nsubj	_	start_char=1085|end_char=1090
+4	näkemään	nähdä	VERB	V	Case=Ill|InfForm=3|Number=Sing|VerbForm=Inf|Voice=Act	2	xcomp:ds	_	start_char=1091|end_char=1099
+5	mistä	mikä	PRON	Pron	Case=Ela|Number=Sing|PronType=Int	7	obl	_	start_char=1101|end_char=1106
+6	vihasi	vihata	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	7	nsubj	_	start_char=1107|end_char=1113
+7	tulee	tulla	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	4	ccomp	_	start_char=1114|end_char=1119
+8	.	.	PUNCT	Punct	_	2	punct	_	start_char=1119|end_char=1120
+
+1	Kukaan	kukaan	PRON	Pron	Case=Nom|Number=Sing|PronType=Ind	3	nsubj	_	start_char=1122|end_char=1128
+2	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	3	aux	_	start_char=1129|end_char=1131
+3	tiedä	tietää	VERB	V	Connegative=Yes|Mood=Ind|Tense=Pres|VerbForm=Fin	0	root	_	start_char=1132|end_char=1137
+4	missä	mikä	PRON	Pron	Case=Ine|Number=Sing|PronType=Int	6	obl	_	start_char=1139|end_char=1144
+5	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	6	nsubj	_	start_char=1145|end_char=1148
+6	asuu	asua	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	3	ccomp	_	start_char=1149|end_char=1153
+7	.	.	PUNCT	Punct	_	3	punct	_	start_char=1153|end_char=1154
+
+1	Tämä	tämä	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	6	nsubj:cop	_	start_char=1156|end_char=1160
+2	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	6	aux	_	start_char=1161|end_char=1163
+3	tietenkään	tietenkään	ADV	Adv	_	6	advmod	_	start_char=1164|end_char=1174
+4	ole	olla	AUX	V	Connegative=Yes|Mood=Ind|Tense=Pres|VerbForm=Fin	6	cop	_	start_char=1175|end_char=1178
+5	kenenkään	kukaan	PRON	Pron	Case=Gen|Number=Sing|PronType=Ind	6	nmod:poss	_	start_char=1179|end_char=1188
+6	vika	vika	NOUN	N	Case=Nom|Number=Sing	0	root	_	start_char=1189|end_char=1193
+7	—	—	PUNCT	Punct	_	9	punct	_	start_char=1194|end_char=1195
+8	mutta	mutta	CCONJ	C	_	9	cc	_	start_char=1196|end_char=1201
+9	se	se	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	6	conj	_	start_char=1202|end_char=1204
+10	mitä	mikä	PRON	Pron	Case=Par|Number=Sing|PronType=Rel	11	nsubj	_	start_char=1205|end_char=1209
+11	tapahtuu	tapahtua	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	9	acl:relcl	_	start_char=1210|end_char=1218
+12	on	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	20	cop	_	start_char=1220|end_char=1222
+13	että	että	SCONJ	C	_	20	mark	_	start_char=1223|end_char=1227
+14	jotkut	joku	PRON	Pron	Case=Nom|Number=Plur|PronType=Ind	17	det	_	start_char=1228|end_char=1234
+15	vanhemmat	vanhempi	NOUN	N	Case=Nom|Number=Plur	16	obl	_	start_char=1235|end_char=1244
+16	toipuneet	toipua	VERB	V	Case=Nom|Number=Plur|PartForm=Past|VerbForm=Part|Voice=Act	17	acl	_	start_char=1245|end_char=1254
+17	jäsenet	jäsen	NOUN	N	Case=Nom|Number=Plur	20	nsubj	_	start_char=1255|end_char=1262
+18	eivät	ei	AUX	V	Number=Plur|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	20	aux	_	start_char=1263|end_char=1268
+19	enää	enää	ADV	Adv	_	20	advmod	_	start_char=1269|end_char=1273
+20	tunne	tuntea	VERB	V	Connegative=Yes|Mood=Ind|Tense=Pres|VerbForm=Fin	9	ccomp	_	start_char=1274|end_char=1279
+21	samaistuvansa	samaistua	VERB	V	Case=Gen|Number=Sing|PartForm=Pres|Person[psor]=3|VerbForm=Part|Voice=Act	20	xcomp	_	start_char=1280|end_char=1293
+22	näiden	tämä	PRON	Pron	Case=Gen|Number=Plur|PronType=Dem	23	det	_	start_char=1294|end_char=1300
+23	ihmisten	ihminen	NOUN	N	Case=Gen|Number=Plur	21	obl	_	start_char=1301|end_char=1309
+24	kanssa	kanssa	ADP	Adp	AdpType=Post	23	case	_	start_char=1310|end_char=1316
+25	ja	ja	CCONJ	C	_	28	cc	_	start_char=1317|end_char=1319
+26	ovat	olla	AUX	V	Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	28	cop	_	start_char=1320|end_char=1324
+27	aika	aika	ADV	Adv	_	28	advmod	_	start_char=1325|end_char=1329
+28	väsyneitä	väsynyt	ADJ	A	Case=Par|Degree=Pos|Number=Plur	20	conj	_	start_char=1330|end_char=1339
+29	kuuntelemaan	kuunnella	VERB	V	Case=Ill|InfForm=3|Number=Sing|VerbForm=Inf|Voice=Act	28	xcomp	_	start_char=1340|end_char=1352
+30	heidän	hän	PRON	Pron	Case=Gen|Number=Plur|Person=3|PronType=Prs	31	nmod:poss	_	start_char=1353|end_char=1359
+31	juttujaan	juttu	NOUN	N	Case=Par|Number=Plur|Person[psor]=3	29	obj	_	start_char=1360|end_char=1369
+32	joten	joten	ADV	Adv	_	34	advmod	_	start_char=1371|end_char=1376
+33	he	hän	PRON	Pron	Case=Nom|Number=Plur|Person=3|PronType=Prs	34	nsubj	_	start_char=1377|end_char=1379
+34	jäävät	jäädä	VERB	V	Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	28	acl:relcl	_	start_char=1380|end_char=1386
+35	kotiin	koti	NOUN	N	Case=Ill|Number=Sing	34	obl	_	start_char=1387|end_char=1393
+36	.	.	PUNCT	Punct	_	6	punct	_	start_char=1393|end_char=1394
+
+1	Hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	2	nsubj	_	start_char=1396|end_char=1399
+2	vastasi	vastata	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=1400|end_char=1407
+3	että	että	SCONJ	C	_	5	mark	_	start_char=1409|end_char=1413
+4	hänestä	hän	PRON	Pron	Case=Ela|Number=Sing|Person=3|PronType=Prs	5	obl	_	start_char=1414|end_char=1421
+5	tuntuu	tuntua	VERB	V	Mood=Ind|Number=Sing|Person=0|Tense=Pres|VerbForm=Fin|Voice=Act	2	ccomp	_	start_char=1422|end_char=1428
+6	kuin	kuin	SCONJ	C	_	9	mark	_	start_char=1429|end_char=1433
+7	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	9	nsubj	_	start_char=1434|end_char=1437
+8	olisi	olla	AUX	V	Mood=Cnd|Number=Sing|Person=3|VerbForm=Fin|Voice=Act	9	aux	_	start_char=1438|end_char=1443
+9	syntynyt	syntyä	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	5	advcl	_	start_char=1444|end_char=1452
+10	uudelleen	uudelleen	ADV	Adv	_	9	advmod	_	start_char=1453|end_char=1462
+11	.	.	PUNCT	Punct	_	2	punct	_	start_char=1462|end_char=1463
+
+1	Aviomieheni	avio#mies	NOUN	N	Case=Nom|Number=Sing|Number[psor]=Sing|Person[psor]=1	2	nsubj	_	start_char=1465|end_char=1476
+2	palasi	palata	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin|Voice=Act	0	root	_	start_char=1477|end_char=1483
+3	lopulta	lopulta	ADV	Adv	_	2	advmod	_	start_char=1484|end_char=1491
+4	mutta	mutta	CCONJ	C	_	6	cc	_	start_char=1492|end_char=1497
+5	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	6	aux	_	start_char=1498|end_char=1500
+6	kestänyt	kestää	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	2	conj	_	start_char=1501|end_char=1509
+7	kauaa	kauaa	ADV	Adv	_	6	advmod	_	start_char=1510|end_char=1515
+8	kun	kun	SCONJ	C	_	9	mark	_	start_char=1517|end_char=1520
+9	ymmärsin	ymmärtää	VERB	V	Mood=Ind|Number=Sing|Person=1|Tense=Past|VerbForm=Fin|Voice=Act	6	advcl	_	start_char=1521|end_char=1529
+10	totuuden	totuus	NOUN	N	Case=Gen|Derivation=Vs|Number=Sing	9	obj	_	start_char=1530|end_char=1538
+11	.	.	PUNCT	Punct	_	2	punct	_	start_char=1538|end_char=1539
+
+1	Tee	tehdä	VERB	V	Mood=Imp|Number=Sing|Person=2|VerbForm=Fin|Voice=Act	0	root	_	start_char=1541|end_char=1544
+2	se	se	PRON	Pron	Case=Nom|Number=Sing|PronType=Dem	1	obj	_	start_char=1545|end_char=1547
+3	joka	joka	PRON	Pron	Case=Nom|Number=Sing|PronType=Rel	4	det	_	start_char=1548|end_char=1552
+4	päivä	päivä	NOUN	N	Case=Nom|Number=Sing	1	obl	_	start_char=1553|end_char=1558
+5	kahden	kaksi	NUM	Num	Case=Gen|NumType=Card|Number=Sing	6	nummod	_	start_char=1559|end_char=1565
+6	viikon	viikko	NOUN	N	Case=Gen|Number=Sing	7	nmod:poss	_	start_char=1566|end_char=1572
+7	ajan	aika	NOUN	N	Case=Gen|Number=Sing	1	obl	_	start_char=1573|end_char=1577
+8	ja	ja	CCONJ	C	_	9	cc	_	start_char=1579|end_char=1581
+9	katso	katsoa	VERB	V	Mood=Imp|Number=Sing|Person=2|VerbForm=Fin|Voice=Act	1	conj	_	start_char=1582|end_char=1587
+10	mitä	mikä	PRON	Pron	Case=Par|Number=Sing|PronType=Int	11	nsubj	_	start_char=1588|end_char=1592
+11	tapahtuu	tapahtua	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	9	ccomp	_	start_char=1593|end_char=1601
+12	.	.	PUNCT	Punct	_	1	punct	_	start_char=1601|end_char=1602
+
+1	Heti	heti	ADV	Adv	_	2	advmod	_	start_char=1604|end_char=1608
+2	kun	kun	SCONJ	C	_	3	mark	_	start_char=1609|end_char=1612
+3	alat	alkaa	VERB	V	Mood=Ind|Number=Plur|Person=2|Tense=Pres|VerbForm=Fin|Voice=Act	13	advcl	_	start_char=1613|end_char=1617
+4	maksaa	maksaa	VERB	V	InfForm=1|Number=Sing|VerbForm=Inf|Voice=Act	3	xcomp	_	start_char=1618|end_char=1624
+5	takaisin	takaisin	ADV	Adv	_	4	advmod	_	start_char=1625|end_char=1633
+6	ihmisille	ihminen	NOUN	N	Case=All|Number=Plur	5	nmod	_	start_char=1634|end_char=1643
+7	niihin	se	PRON	Pron	Case=Ill|Number=Plur|PronType=Dem	8	det	_	start_char=1645|end_char=1651
+8	ihmisiin	ihminen	NOUN	N	Case=Ill|Number=Plur	9	obl	_	start_char=1652|end_char=1660
+9	liittyvät	liittyä	VERB	V	Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	10	acl	_	start_char=1661|end_char=1670
+10	pelkosi	pelko	NOUN	N	Case=Nom|Number=Sing|Number[psor]=Sing|Person[psor]=2	4	obj	_	start_char=1671|end_char=1678
+11	ja	ja	CCONJ	C	_	13	cc	_	start_char=1679|end_char=1681
+12	velkasi	veli	NOUN	N	Case=Nom|Number=Plur|Number[psor]=Sing|Person[psor]=2	13	nsubj	_	start_char=1682|end_char=1689
+13	katoavat	kadota	VERB	V	Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	0	root	_	start_char=1690|end_char=1698
+14	.	.	PUNCT	Punct	_	13	punct	_	start_char=1698|end_char=1699
+
+1	Hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	4	nsubj	_	start_char=1701|end_char=1704
+2	on	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	4	aux	_	start_char=1705|end_char=1707
+3	jo	jo	ADV	Adv	_	4	advmod	_	start_char=1708|end_char=1710
+4	tehnyt	tehdä	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	0	root	_	start_char=1711|end_char=1717
+5	sinulle	sinä	PRON	Pron	Case=All|Number=Sing|Person=2|PronType=Prs	4	obl	_	start_char=1718|end_char=1725
+6	kaiken	kaikki	PRON	Pron	Case=Gen|Number=Sing|PronType=Ind	8	det	_	start_char=1726|end_char=1732
+7	pahimman	paha	ADJ	A	Case=Gen|Degree=Sup|Number=Sing	8	amod	_	start_char=1733|end_char=1741
+8	mahdollisen	mahdollinen	ADJ	A	Case=Gen|Degree=Pos|Derivation=Llinen|Number=Sing	4	obj	_	start_char=1742|end_char=1753
+9	vastustamalla	vastustaa	VERB	V	Case=Ade|InfForm=3|Number=Sing|VerbForm=Inf|Voice=Act	4	advcl	_	start_char=1754|end_char=1767
+10	tapaamistanne	tapaaminen	NOUN	N	Case=Par|Number=Sing|Number[psor]=Plur|Person[psor]=1	9	obj	_	start_char=1768|end_char=1781
+11	ja	ja	CCONJ	C	_	26	cc	_	start_char=1782|end_char=1784
+12	jos	jos	SCONJ	C	_	15	mark	_	start_char=1785|end_char=1788
+13	hän	hän	PRON	Pron	Case=Nom|Number=Sing|Person=3|PronType=Prs	15	nsubj	_	start_char=1789|end_char=1792
+14	on	olla	AUX	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	15	aux	_	start_char=1793|end_char=1795
+15	tehnyt	tehdä	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	26	advcl	_	start_char=1796|end_char=1802
+16	pahimpansa	paha	ADJ	A	Case=Gen|Degree=Pos|Number=Sing	15	obj	_	start_char=1803|end_char=1813
+17	ja	ja	CCONJ	C	_	20	cc	_	start_char=1814|end_char=1816
+18	sinä	sinä	PRON	Pron	Case=Nom|Number=Sing|Person=2|PronType=Prs	20	nsubj	_	start_char=1817|end_char=1821
+19	olet	olla	AUX	V	Mood=Ind|Number=Sing|Person=2|Tense=Pres|VerbForm=Fin|Voice=Act	20	aux	_	start_char=1822|end_char=1826
+20	tehnyt	tehdä	VERB	V	Case=Nom|Number=Sing|PartForm=Past|VerbForm=Part|Voice=Act	15	conj	_	start_char=1827|end_char=1833
+21	parhaimpasi	hyvä	ADJ	A	Case=Gen|Degree=Pos|Number=Sing	20	obj	_	start_char=1834|end_char=1845
+22	niin	niin	ADV	Adv	_	26	advmod	_	start_char=1847|end_char=1851
+23	ei	ei	AUX	V	Number=Sing|Person=3|Polarity=Neg|VerbForm=Fin|Voice=Act	26	aux	_	start_char=1852|end_char=1854
+24	ole	olla	AUX	V	Connegative=Yes|Mood=Ind|Tense=Pres|VerbForm=Fin	26	cop	_	start_char=1855|end_char=1858
+25	mitään	mikään	PRON	Pron	Case=Par|Number=Sing|PronType=Ind	26	det	_	start_char=1859|end_char=1865
+26	syytä	syy	NOUN	N	Case=Par|Number=Sing	4	conj	_	start_char=1866|end_char=1871
+27	pelätä	pelätä	VERB	V	InfForm=1|Number=Sing|VerbForm=Inf|Voice=Act	26	xcomp:ds	_	start_char=1872|end_char=1878
+28	häntä	hän	PRON	Pron	Case=Par|Number=Sing|Person=3|PronType=Prs	27	obj	_	start_char=1879|end_char=1884
+29	enää	enää	ADV	Adv	_	27	advmod	_	start_char=1885|end_char=1889
+30	jolloin	jolloin	ADV	Adv	_	34	advmod	_	start_char=1891|end_char=1898
+31	häneen	hän	PRON	Pron	Case=Ill|Number=Sing|Person=3|PronType=Prs	32	obl	_	start_char=1899|end_char=1905
+32	liittyvä	liittyä	VERB	V	Case=Nom|Number=Sing|PartForm=Pres|VerbForm=Part|Voice=Act	33	acl	_	start_char=1906|end_char=1914
+33	pelko	pelko	NOUN	N	Case=Nom|Number=Sing	34	nsubj	_	start_char=1915|end_char=1920
+34	häviää	hävitä	VERB	V	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin|Voice=Act	27	acl:relcl	_	start_char=1921|end_char=1927
+35	.	.	PUNCT	Punct	_	4	punct	_	start_char=1927|end_char=1928
+

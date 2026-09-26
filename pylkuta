@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Pilkkutarkistimen ajuri. Käyttö: pylkuta tiedosto.md [valitsimet]
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "$DIR/.venv/bin/python" -m pylkutus "$@"

@@ -1,0 +1,10 @@
+.venv/
+.cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Lähdedokumentin teksti: ei julkiseen repoon
+tests/snapshot/
+arviointi/kulta/
