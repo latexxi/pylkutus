@@ -65,3 +65,8 @@ Mittaus merkittyä otosta vasten (merkintätapa: `pylkutus/arviointi.py`):
 
 Kehityksessä käytetty lähdedokumentti, sen merkityt otokset ja koko tekstin tilannekuvat
 eivät ole repossa.
+
+## Lisenssi
+
+MIT, ks. [`LICENSE`](LICENSE). Lisenssi koskee koodia; testeissä ja tulostiedostoissa
+lainatut lähdedokumentin virkkeet eivät kuulu sen piiriin.
