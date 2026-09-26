@@ -10,6 +10,14 @@ LYHENTEET = {
 # Alistuskonjunktiot (1.1)
 ALISTUS = {"että", "jotta", "koska", "kun", "kunnes", "jos", "vaikka", "jollei", "ellei",
            "kunhan", "mikäli"}
+# mark-sanat, jotka tekevät lauseesta finiittisen, vaikka verbi olisi merkitty väärin
+ALISTUS_MARK = ALISTUS | {"kuin", "ennen", "sillä"}
+
+# Kysymyssanat (1.5)
+KYSYMYSSANAT = {"kuka", "mikä", "mitä", "minkä", "mitkä", "missä", "mistä", "mihin", "minne",
+                "milloin", "miksi", "miten", "kuinka", "millainen", "millaista", "millaisia",
+                "montako", "paljonko", "kumpi", "kenen", "ketä", "keitä", "kenelle", "keneltä",
+                "kenestä", "keneen", "kenet", "missään", "mille", "miltä", "millä", "mistään"}
 
 # Moniosaiset konjunktioilmaukset (1.2): pilkku joko koko ilmauksen eteen tai ennen viimeistä osaa.
 MONIOSAISET = [
@@ -44,5 +52,5 @@ KYSYMYSVERBIT = {
     "selittää", "kertoa", "näyttää", "tajuta", "muistaa", "arvata", "pohtia", "päättää",
     "selvittää", "tutkia", "ihmetellä", "epäillä", "oppia", "osoittaa", "sanoa", "kuvata",
     "kuvailla", "tarkistaa", "arvioida", "harkita", "keskustella", "tarkastella", "havaita",
-    "ymmärtämään", "punnita", "näkemään", "kuulla", "aavistaa", "unohtaa", "tuntea",
+    "punnita", "kuulla", "aavistaa", "unohtaa", "tuntea",
 }

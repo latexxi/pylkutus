@@ -83,3 +83,26 @@ low 192). Käsin arvioitu 40 satunnaista varoitusta (siemen 7, ennen viimeisiä 
 A2) vain `--tyyli`-lipulla.
 
 **Seuraava puhdas mittaus** vaatii uuden merkityn otoksen (kappaleet 51–100 samalla siemenellä).
+
+## 2026-09-26 Synteettinen UD-mittari (PLAN_KORJAUKSET.md K6)
+
+UD Finnish TDT r2.15, test-jako (ei Stanzan opetusdatassa). Pilkut poistettu todennäköisyydellä
+0,5 (siemen 2026, vain pilkut, joita seuraa välilyönti); muut raot oletetaan oikeiksi. Mitattu
+ilman `--tyyli`-lippua. K1–K5-refaktoroinnin jälkeinen koodi antaa jäsennintilassa täsmälleen
+saman tuloksen kuin baseline `b2607ec`.
+
+| Aineisto | Tila | lisää: osumat / väärät / ohitetut | tarkkuus | kattavuus | poista: väärät |
+|---|---|---|---|---|---|
+| kaikki (1555 virkettä, 585 poistoa) | Stanza | 311 / 179 / 274 | 63,5 % | 53,2 % | 8 |
+| kaikki | kultapuut | 362 / 149 / 223 | 70,8 % | 61,9 % | 11 |
+| toimitetut e,j,t,u (434 virkettä, 203 poistoa) | Stanza | 123 / 26 / 80 | 82,6 % | 60,6 % | 4 |
+| toimitetut e,j,t,u | kultapuut | 144 / 17 / 59 | 89,4 % | 70,9 % | 5 |
+
+Havainnot:
+- Kultapuut vs. Stanza: jäsennysvirheet selittävät noin 9 prosenttiyksikköä kattavuudesta ja
+  7 tarkkuudesta. Loput ovat sääntöjen tai mittarin virheitä.
+- Tekstilajeittain (kultapuut, tarkkuus): u 92 %, e 87 %, t 86 %, j 84 %, w 71 %, h 68 %,
+  s 67 %, b 60 %, f 51 %. Blogeissa ja fiktiossa suuri osa "vääristä" on lähdetekstistä
+  puuttuvia pilkkuja (*Kukaan ei edes tiedä missä hän asuu*), ei tarkistimen virheitä.
+- Ohitetuista suurin osa on sääntöjä, joita ei ole toteutettu (appositio, lainaukset,
+  luettelot ilman konjunktiota lauseenjäsenten välissä ym.).

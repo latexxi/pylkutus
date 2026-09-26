@@ -136,12 +136,6 @@ def test_sulkeet(virkkeet):
     assert L.sulkeet(v, ls) == "[[Kun tulin kotiin]advcl , söin]root ."
 
 
-def test_yhdista():
-    from pylkutus.tyypit import Raja
-    a = [Raja(2, "alku", None, None, None), Raja(5, "loppu", None, None, None)]
-    b = [Raja(2, "alku", None, None, None), Raja(7, "alku", None, None, None)]
-    tulos = L.yhdista(a, b)
-    assert [(r.rako, r.lahde) for r in tulos] == [(2, "AB"), (5, "A"), (7, "B")]
 
 
 def test_partisiippimaare_ei_lause(virkkeet):

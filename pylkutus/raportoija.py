@@ -1,15 +1,13 @@
 """Moduuli 5: raportoija (PLAN_PILKKU.md 3.7, 7.3/V8)."""
 from __future__ import annotations
 
-from .tyypit import Leipateksti, Varoitus
-
-VARMUUS = {"low": 0, "medium": 1, "high": 2}
+from .tyypit import Leipateksti, Varmuus, Varoitus
 
 
 def suodata(varoitukset: list[Varoitus], min_varmuus: str = "low",
             saannot: set[str] | None = None) -> list[Varoitus]:
     return [v for v in varoitukset
-            if VARMUUS[v.varmuus] >= VARMUUS[min_varmuus]
+            if Varmuus(v.varmuus).taso >= Varmuus(min_varmuus).taso
             and (not saannot or v.saanto in saannot)]
 
 

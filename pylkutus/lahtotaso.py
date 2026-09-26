@@ -3,6 +3,9 @@
 (a) vanha pilkut.py: sen check_line ajetaan kappaleelle, ja varoituksen token muunnetaan
     offsetiksi. Sääntö "loppupilkku" jätetään pois, koska se ei osoita paikkaa.
 (b) sanalista: sidesana, relatiivisana tai kysymyssana ilman edeltävää pilkkua.
+
+Lähtötasot ovat jäädytettyjä: niiden sanalistat ovat tarkoituksella erillään sanastot.py:stä,
+jotta mittaus pysyy vertailukelpoisena.
 """
 from __future__ import annotations
 
@@ -12,7 +15,7 @@ import re
 
 from .tyypit import Varoitus
 
-VANHA = os.path.expanduser("~/Documents/ratkaisu/pilkut.py")
+VANHA = os.path.expanduser(os.environ.get("PYLKUTUS_VANHA", "~/Documents/ratkaisu/pilkut.py"))
 _vanha = None
 
 

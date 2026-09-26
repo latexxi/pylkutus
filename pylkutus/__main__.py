@@ -1,19 +1,25 @@
 import argparse
 import sys
 
-from . import ajuri, raportoija, saantotarkistin
+from . import ajuri, raportoija, saannot, saantotarkistin
 
 
 def main(argv=None):
     p = argparse.ArgumentParser(prog="pylkuta", description="Suomen kielen pilkkutarkistin.")
-    p.add_argument("tiedosto", help="md- tai tekstitiedosto (tekstissä kappaleet tyhjin rivein)")
+    p.add_argument("tiedosto", nargs="?", help="md- tai tekstitiedosto (tekstissä kappaleet tyhjin rivein)")
     p.add_argument("--min", choices=["high", "medium", "low"], default="low",
                    help="vähimmäisvarmuus (oletus low)")
     p.add_argument("--rule", action="append", help="näytä vain tämä sääntö (voi toistaa)")
     p.add_argument("--tyyli", action="store_true", help="näytä myös valinnaiset pilkut")
     p.add_argument("--dump", choices=["virkkeet", "lauseet", "rajat"],
                    help="tulosta välitulos varoitusten sijaan")
+    p.add_argument("--saannot", action="store_true", help="listaa säännöt ja lopeta")
     a = p.parse_args(argv)
+    if a.saannot:
+        print(saannot.listaus())
+        return 0
+    if not a.tiedosto:
+        p.error("tiedosto puuttuu")
     leipa = ajuri.lue(a.tiedosto)
     analyysit = ajuri.analysoi(leipa)
     if a.dump:

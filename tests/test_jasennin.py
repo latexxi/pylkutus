@@ -3,7 +3,7 @@ import os
 import pytest
 
 from pylkutus import conllu
-from pylkutus.conllu import Sana, Lause
+from pylkutus.conllu import ConlluVirke, Sana
 from pylkutus.jasennin import korjaa_virkejako
 
 LAHDE = os.path.expanduser("~/Documents/ratkaisu/2026-09-14 ratkaisu.md")
@@ -16,7 +16,7 @@ def S(id, teksti, head, deprel, alku, upos="X"):
 # --- nopeat testit ---------------------------------------------------------
 
 def test_conllu_edestakaisin():
-    l = Lause([Sana(1, "Hän", "hän", "PRON", "Pron", {"Case": "Nom", "Person": "3"}, 2, "nsubj", 0, 3),
+    l = ConlluVirke([Sana(1, "Hän", "hän", "PRON", "Pron", {"Case": "Nom", "Person": "3"}, 2, "nsubj", 0, 3),
                Sana(2, "tuli", "tulla", "VERB", "V", {"VerbForm": "Fin"}, 0, "root", 4, 8)])
     teksti = conllu.kirjoita([l], ["versio"])
     otsake, lauseet = conllu.lue(teksti)
@@ -26,7 +26,7 @@ def test_conllu_edestakaisin():
 
 def test_pilkut_rakoihin():
     # Hän sanoi , että tulee .
-    l = Lause([S(1, "Hän", 2, "nsubj", 0), S(2, "sanoi", 0, "root", 4),
+    l = ConlluVirke([S(1, "Hän", 2, "nsubj", 0), S(2, "sanoi", 0, "root", 4),
                S(3, ",", 5, "punct", 9, "PUNCT"), S(4, "että", 5, "mark", 11),
                S(5, "tulee", 2, "ccomp", 16), S(6, ".", 2, "punct", 21, "PUNCT")])
     v = conllu.virkkeeksi(l)
@@ -36,7 +36,7 @@ def test_pilkut_rakoihin():
 
 
 def test_pilkku_paana_ketjutetaan():
-    l = Lause([S(1, "a", 0, "root", 0), S(2, ",", 1, "punct", 1, "PUNCT"),
+    l = ConlluVirke([S(1, "a", 0, "root", 0), S(2, ",", 1, "punct", 1, "PUNCT"),
                S(3, "b", 2, "conj", 3)])
     v = conllu.virkkeeksi(l)
     assert v.tokenit[1].head == 1
@@ -96,9 +96,9 @@ def jasenna():
 
     def f(teksti):
         leipa = lue_teksti(teksti)
-        a, b = jasennin.jasenna(leipa, valimuisti=None)
-        assert jasennin.tarkista(leipa, a, b) == []
-        return leipa, a, b
+        a = jasennin.jasenna(leipa, valimuisti=None)
+        assert jasennin.tarkista(leipa, a) == []
+        return leipa, a
     return f
 
 
@@ -112,36 +112,33 @@ def jasenna():
     ("Hän tuli. Hän meni.", 2),
 ])
 def test_virkejako(jasenna, teksti, virkkeita):
-    _, a, _ = jasenna(teksti)
+    _, a = jasenna(teksti)
     assert len(a) == virkkeita
 
 
 @pytest.mark.stanza
 def test_desimaalipilkku_ei_rako(jasenna):
     from pylkutus import jasennin
-    _, a, b = jasenna("Luku oli 3,5 prosenttia.")
+    _, a = jasenna("Luku oli 3,5 prosenttia.")
     v = jasennin.virkkeet(a)[0]
     assert "3,5" in [t.teksti for t in v.tokenit]
     assert not any(v.rako)
 
 
 @pytest.mark.stanza
-def test_mwt_samat_sanat(jasenna):
+def test_mwt_laajennus(jasenna):
     from pylkutus import jasennin
-    _, a, b = jasenna("Hän sanoi, ettei tule.")
+    _, a = jasenna("Hän sanoi, ettei tule.")
     ta = [t.teksti for t in jasennin.virkkeet(a)[0].tokenit]
-    tb = [t.teksti for t in jasennin.virkkeet(b)[0].tokenit]
-    assert ta == tb
     assert "ei" in ta
 
 
 @pytest.mark.stanza
 def test_toistettavuus(jasenna):
     t = "Kun tulin kotiin, söin. Hän sanoi että jos ehtii hän tulee."
-    _, a1, b1 = jasenna(t)
-    _, a2, b2 = jasenna(t)
+    _, a1 = jasenna(t)
+    _, a2 = jasenna(t)
     assert conllu.kirjoita(a1) == conllu.kirjoita(a2)
-    assert conllu.kirjoita(b1) == conllu.kirjoita(b2)
 
 
 @pytest.mark.stanza
@@ -151,5 +148,23 @@ def test_koko_dokumentti_invariantit():
     from pylkutus.esikasittelija import lue_md
     with open(LAHDE, encoding="utf-8") as f:
         leipa, _ = lue_md(f.read())
-    a, b = jasennin.jasenna(leipa)      # välimuistista, jos ajettu
-    assert jasennin.tarkista(leipa, a, b) == []
+    a = jasennin.jasenna(leipa)         # välimuistista, jos ajettu
+    assert jasennin.tarkista(leipa, a) == []
+
+
+@pytest.mark.stanza
+def test_kappalevalimuisti(tmp_path, monkeypatch):
+    from pylkutus import jasennin
+    from pylkutus.esikasittelija import lue_teksti
+    t1 = "Kun tulin kotiin, söin.\n\nHän sanoi että jos ehtii hän tulee. Tri. Virtanen tuli."
+    t2 = "Kun tulin kotiin, söin.\n\nHän ei tullut."
+    kokonaan = jasennin.jasenna_teksti(t1)
+    assert conllu.kirjoita(jasennin.jasenna(lue_teksti(t1), str(tmp_path))) == conllu.kirjoita(kokonaan)
+    jasennetyt = []
+    alkuperainen = jasennin.jasenna_teksti
+    monkeypatch.setattr(jasennin, "jasenna_teksti", lambda t: jasennetyt.append(t) or alkuperainen(t))
+    assert conllu.kirjoita(jasennin.jasenna(lue_teksti(t1), str(tmp_path))) == conllu.kirjoita(kokonaan)
+    assert jasennetyt == []                                  # kaikki välimuistista
+    a = jasennin.jasenna(lue_teksti(t2), str(tmp_path))
+    assert jasennetyt == ["Hän ei tullut."]                  # vain muuttunut kappale
+    assert jasennin.tarkista(lue_teksti(t2), a) == []

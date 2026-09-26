@@ -17,8 +17,8 @@ Säännöt, menetelmä, mittaustulokset ja työn tila: [`PLAN_PILKKU.md`](PLAN_P
 
 1. **Esikäsittely**: leipäteksti md-tiedostosta (otsikot, span-tagit ja muu merkintä pois),
    offset-kartta alkuperäisiin riveihin ja sarakkeisiin.
-2. **Jäsennys**: Stanza (suomen UD-malli, CPU). Virkejaon korjaus lyhennelistalla. Jäsennys
-   tehdään kahdesti: A pilkkujen kanssa, B ilman. Tulokset välimuistiin (`.cache/`).
+2. **Jäsennys**: Stanza (suomen UD-malli, CPU). Virkejaon korjaus lyhennelistalla. Tulokset
+   välimuistiin (`.cache/`).
 3. **Lauseistus**: UD-puusta lauseet (sivu-, relatiivi-, kysymys- ja rinnasteiset lauseet),
    finiittisyys (Voikko korjaa Stanzan virheitä) ja lauserajat.
 4. **Säännöt**: jokaiselle rajalle luvun 1 sääntö (S1 alistuskonjunktio, S3 epäsuora
@@ -32,12 +32,14 @@ Vaatii Python 3.12:n, järjestelmän `libvoikko`-paketin (Ubuntu: `python3-libvo
 
 ```bash
 /usr/bin/python3 -m venv --system-site-packages .venv   # libvoikko järjestelmästä
-.venv/bin/pip install stanza pytest
-.venv/bin/pip install -e .
+.venv/bin/pip install -e ".[dev]"                        # stanza, pytest
 .venv/bin/python -c "import stanza; stanza.download('fi')"
 ```
 
 ## Käyttö
+
+Komento `pylkuta` asentuu virtuaaliympäristöön (`.venv/bin/pylkuta`); repon juuren
+`./pylkuta` ajaa saman ilman aktivointia.
 
 ```bash
 ./pylkuta tiedosto.md                  # kaikki varoitukset
@@ -45,11 +47,12 @@ Vaatii Python 3.12:n, järjestelmän `libvoikko`-paketin (Ubuntu: `python3-libvo
 ./pylkuta tiedosto.md --rule S3        # yksi sääntö
 ./pylkuta tiedosto.md --tyyli          # myös valinnaiset pilkut
 ./pylkuta tiedosto.md --dump lauseet   # lausesulut tarkistusta varten
-./pylkuta tiedosto.md --dump rajat     # lauserajat ja niiden lähde (A/B)
+./pylkuta tiedosto.md --dump rajat     # lauserajat ja niiden tyyppi
+./pylkuta --saannot                    # toteutetut säännöt
 ```
 
-Ensimmäinen ajo jäsentää tekstin (noin 4 min 300 000 merkille CPU:lla); seuraavat ajot
-käyttävät välimuistia.
+Ensimmäinen ajo jäsentää tekstin (noin 2 min 300 000 merkille CPU:lla); seuraavat ajot
+käyttävät kappalekohtaista välimuistia: muokattu kappale jäsennetään uudelleen yksinään.
 
 ## Tulokset
 

@@ -25,7 +25,7 @@ class Sana:
 
 
 @dataclass
-class Lause:
+class ConlluVirke:
     sanat: list[Sana]
     kommentit: list[str] = field(default_factory=list)
 
@@ -40,7 +40,7 @@ def _feats_dict(s: str) -> dict[str, str]:
     return dict(kv.split("=", 1) for kv in s.split("|"))
 
 
-def kirjoita(lauseet: list[Lause], otsake: list[str] | None = None) -> str:
+def kirjoita(lauseet: list[ConlluVirke], otsake: list[str] | None = None) -> str:
     rivit = [f"# {o}" for o in (otsake or [])]
     for l in lauseet:
         rivit.extend(f"# {k}" for k in l.kommentit)
@@ -53,17 +53,17 @@ def kirjoita(lauseet: list[Lause], otsake: list[str] | None = None) -> str:
     return "\n".join(rivit) + "\n"
 
 
-def lue(teksti: str) -> tuple[list[str], list[Lause]]:
+def lue(teksti: str) -> tuple[list[str], list[ConlluVirke]]:
     """Palauttaa (tiedoston otsakekommentit, lauseet)."""
     otsake: list[str] = []
-    lauseet: list[Lause] = []
-    nyk = Lause([])
+    lauseet: list[ConlluVirke] = []
+    nyk = ConlluVirke([])
     ensimmainen = True
     for rivi in teksti.split("\n"):
         if not rivi.strip():
             if nyk.sanat:
                 lauseet.append(nyk)
-                nyk = Lause([])
+                nyk = ConlluVirke([])
             ensimmainen = False
             continue
         if rivi.startswith("#"):
@@ -85,7 +85,7 @@ def on_pilkku(s: Sana) -> bool:
     return s.teksti == "," and s.upos in ("PUNCT", "")
 
 
-def virkkeeksi(lause: Lause) -> Virke:
+def virkkeeksi(lause: ConlluVirke) -> Virke:
     """Poistaa pilkut tokeneista ja siirtää ne rakoihin. Päät numeroidaan uudelleen.
     Jos sanan pää on pilkku, pääksi tulee pilkun pää (ketjutetaan)."""
     sanat = lause.sanat

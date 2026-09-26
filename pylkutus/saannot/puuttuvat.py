@@ -1,16 +1,17 @@
 """Puuttuvat pilkut lauserajoilla (luvut 1.1–1.9).
 
-Jokainen sääntö saa rajan ja palauttaa päätöksen: (koodi, pakko, varmuus) tai None, jos
-sääntö ei koske rajaa. pakko: "kyllä" | "valinnainen" | "ei".
+Jokainen sääntö saa rajan ja palauttaa päätöksen (koodi, pakko, varmuus) tai None, jos
+sääntö ei koske rajaa. `paata` kokoaa ne Paatos-olioksi.
 """
 from __future__ import annotations
 
-from ..ajuri import Analyysi
 from ..sanastot import (MONIOSAISET, RAJAMERKIT_EDELLA, RAJAMERKIT_JALJESSA, RINNASTUS_JA,
                         RINNASTUS_MUTTA, RINNASTUS_SILLA)
-from ..tyypit import Lause, Raja, Token
+from ..tyypit import Analyysi, Lause, Paatos, Pakko, Raja, Token, Varmuus
 
-Paatos = tuple[str, str, str]      # (sääntö, pakko, varmuus)
+KYLLA, VALINNAINEN, EI = Pakko.KYLLA, Pakko.VALINNAINEN, Pakko.EI
+HIGH, MEDIUM, LOW = Varmuus.HIGH, Varmuus.MEDIUM, Varmuus.LOW
+Tulos = tuple[str, Pakko, Varmuus]      # (sääntö, pakko, varmuus)
 LAINAUSMERKIT = {'"', "”", "“", "»", "«", "'"}
 
 
@@ -85,7 +86,7 @@ def _paalause_relatiivin_sisalla(x: Analyysi, l: Lause) -> bool:
     return any(t.head - 1 == l.paa and t.deprel.startswith("nsubj") for t in x.a.tokenit)
 
 
-def alkupilkku(x: Analyysi, r: Raja) -> Paatos | None:
+def alkupilkku(x: Analyysi, r: Raja) -> Tulos | None:
     l = r.lause
     alku = l.alku
     eka = _sana(x, alku)
@@ -97,70 +98,70 @@ def alkupilkku(x: Analyysi, r: Raja) -> Paatos | None:
 
     # S1b: kaksi peräkkäistä konjunktiota ("että jos", "ja kun")
     if ed_token.deprel in ("mark", "cc") or ed in RINNASTUS_JA | RINNASTUS_MUTTA:
-        return ("S1b", "ei", "high")
+        return ("S1b", EI, HIGH)
     if x.a.tokenit[alku].deprel == "cc":
         return None             # "ja jos ehdin", ", mutta kun": cc kuuluu sivulauseeseen, ei päätöstä
 
     # V2: "ennen kuin" päälauseen jäljessä: pilkku valinnainen
     if eka == "ennen" and _sana(x, alku + 1) == "kuin":
-        return ("V2", "valinnainen", "high")
+        return ("V2", VALINNAINEN, HIGH)
 
     # M1: moniosainen ilmaus lauseen alussa ("heti kun" jäsennetty sivulauseen sisään)
     m = _moniosainen_alussa(x, l)
     if m is not None:
         if x.a.rako[m]:                              # "heti, kun": pilkku ilmauksen sisällä
-            return ("M1", "valinnainen", "high")
+            return ("M1", VALINNAINEN, HIGH)
         if _sana(x, alku - 1) in RINNASTUS_JA | RINNASTUS_MUTTA:
-            return ("M3", "ei", "high")
-        return ("M1", "kyllä", "high")
+            return ("M3", EI, HIGH)
+        return ("M1", KYLLA, HIGH)
 
     if l.aloittaja is not None and x.a.tokenit[l.aloittaja].deprel == "mark":
         mark = eka
         if mark == "sillä":
-            return ("R4", "kyllä", "medium")
+            return ("R4", KYLLA, MEDIUM)
         if mark == "kuin":
             if ed == "ennen":
-                return ("V2", "valinnainen", "high")
-            return ("V1", "ei", "high")
+                return ("V2", VALINNAINEN, HIGH)
+            return ("V1", EI, HIGH)
         if mark == "kuten":
-            return ("V5", "kyllä", "medium")
+            return ("V5", KYLLA, MEDIUM)
         # M1/M3: moniosainen ilmaus
         m = moniosainen(x, alku)
         if m is not None:
             if m == 0 or x.a.rako[m] or rajamerkki_edella(x, m) \
                     or _sana(x, m - 1) in RINNASTUS_JA | RINNASTUS_MUTTA:
-                return ("M1", "valinnainen", "high")
-            return ("M1", "kyllä", "high")
+                return ("M1", VALINNAINEN, HIGH)
+            return ("M1", KYLLA, HIGH)
         # S1a: hyvin lyhyt virke
         ennen = [t for t in x.a.tokenit[:alku] if t.upos != "PUNCT"]
         if len(ennen) == 1 and l.loppu - l.alku + 1 <= 3 and l.tyyppi != "kysymys":
-            return ("S1a", "valinnainen", "high")
-        return ("S1", "kyllä", "high")
+            return ("S1a", VALINNAINEN, HIGH)
+        return ("S1", KYLLA, HIGH)
 
     if l.tyyppi == "kysymys":
-        return ("S3", "kyllä", "medium")
+        return ("S3", KYLLA, MEDIUM)
 
     if l.tyyppi == "relatiivi":
         # K1/K2: "se, joka" / "se, mitä"
         if _lemma(x, alku - 1) == "se" and x.a.tokenit[alku - 1].upos == "PRON":
             se = alku - 1
             if se == 0 or all(t.upos == "PUNCT" for t in x.a.tokenit[:se]):
-                return ("K2", "valinnainen", "high")
+                return ("K2", VALINNAINEN, HIGH)
             if _sana(x, se - 1) in RINNASTUS_JA | RINNASTUS_MUTTA:
-                return ("K1", "kyllä", "low")       # 1.4: rajatapaus
-            return ("K1", "kyllä", "medium")
+                return ("K1", KYLLA, LOW)       # 1.4: rajatapaus
+            return ("K1", KYLLA, MEDIUM)
         if l.aloittaja is None:
             return None                              # relatiivisanaa ei tunnistettu
-        return ("S2", "kyllä", "medium")
+        return ("S2", KYLLA, MEDIUM)
 
     if l.tyyppi == "sivu":
         if l.aloittaja is None:
             return None                              # esim. finiittinen acl ilman sidesanaa
-        return ("S1", "kyllä", "medium")
+        return ("S1", KYLLA, MEDIUM)
     return None
 
 
-def rinnastus(x: Analyysi, r: Raja) -> Paatos | None:
+def rinnastus(x: Analyysi, r: Raja) -> Tulos | None:
     l = r.lause
     eka = _sana(x, l.alku)
     if _kieltokonjunktio(x.a.tokenit[l.alku]):
@@ -169,31 +170,31 @@ def rinnastus(x: Analyysi, r: Raja) -> Paatos | None:
         # S4: rinnasteiset sivulauseet; ilman konjunktiota S6
         if eka in RINNASTUS_JA:
             if _paalause_relatiivin_sisalla(x, l):
-                return ("R1", "kyllä", "low")
-            return ("S4", "ei", "medium")
+                return ("R1", KYLLA, LOW)
+            return ("S4", EI, MEDIUM)
         if eka in RINNASTUS_MUTTA:
-            return ("R3", "valinnainen" if l.taydellisyys == "vajaa" else "kyllä", "low")
-        return ("S6", "kyllä", "low")
+            return ("R3", VALINNAINEN if l.taydellisyys == "vajaa" else KYLLA, LOW)
+        return ("S6", KYLLA, LOW)
     if eka in RINNASTUS_SILLA:
-        return ("R4", "kyllä", "medium")
+        return ("R4", KYLLA, MEDIUM)
     if eka in RINNASTUS_MUTTA:
         if l.taydellisyys == "vajaa":
-            return ("R3", "valinnainen", "medium")
-        return ("R3", "kyllä", "medium" if l.taydellisyys == "taydellinen" else "low")
+            return ("R3", VALINNAINEN, MEDIUM)
+        return ("R3", KYLLA, MEDIUM if l.taydellisyys == "taydellinen" else LOW)
     if eka in RINNASTUS_JA:
         if l.taydellisyys == "vajaa":
-            return ("R2", "ei", "medium")
+            return ("R2", EI, MEDIUM)
         if l.r1a:
-            return ("R1a", "valinnainen", "medium")
+            return ("R1a", VALINNAINEN, MEDIUM)
         if l.taydellisyys == "ratkaisematon":
-            return ("R1", "kyllä", "low")
-        return ("R1", "kyllä", "low")
+            return ("R1", KYLLA, LOW)
+        return ("R1", KYLLA, LOW)
     if x.a.tokenit[l.alku].deprel == "cc":
         return None                                  # muu konjunktio (esim. "saati")
-    return ("S6", "kyllä", "low")              # V7: tarkkuus heikko koko dokumentilla
+    return ("S6", KYLLA, LOW)              # V7: tarkkuus heikko koko dokumentilla
 
 
-def loppupilkku(x: Analyysi, r: Raja) -> Paatos | None:
+def loppupilkku(x: Analyysi, r: Raja) -> Tulos | None:
     l = r.lause
     if l.tyyppi == "rinnasteinen":
         return None
@@ -207,15 +208,17 @@ def loppupilkku(x: Analyysi, r: Raja) -> Paatos | None:
     if l.tyyppi == "relatiivi" and _lemma(x, l.alku - 1) == "se":
         koodi = "K3"
     if l.virkkeen_alussa and l.tyyppi == "sivu" and _sana(x, l.alku) == "ennen":
-        return ("V2", "kyllä", "medium")
+        return ("V2", KYLLA, MEDIUM)
     # V7: loppurajat perustuvat jänteeseen, joka hajoaa helposti puuttuvan pilkun takia;
     # koko dokumentilla S1e-varoituksista lähes kaikki vääriä, joten aina matala varmuus.
-    return (koodi, "kyllä", "low")
+    return (koodi, KYLLA, LOW)
 
 
 def paata(x: Analyysi, r: Raja) -> Paatos | None:
     if rajamerkki_edella(x, r.rako):
-        return ("1.15", "ei", "high")
-    if r.laji == "alku":
-        return alkupilkku(x, r)
-    return loppupilkku(x, r)
+        t = ("1.15", EI, HIGH)
+    elif r.laji == "alku":
+        t = alkupilkku(x, r)
+    else:
+        t = loppupilkku(x, r)
+    return Paatos(r.rako, *t) if t else None

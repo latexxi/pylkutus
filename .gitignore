@@ -8,3 +8,8 @@ __pycache__/
 # Lähdedokumentin teksti: ei julkiseen repoon
 tests/snapshot/
 arviointi/kulta/
+
+# Tilannekuvat sisältävät lähdetekstiä
+arviointi/tilannekuvat/
+# UD-korpus (CC BY-SA 4.0) ja siitä luodut kultatiedostot: python arviointi/ud.py tee
+arviointi/ud/

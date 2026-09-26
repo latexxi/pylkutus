@@ -1,11 +1,14 @@
-"""Moduuli 2: Stanza-jäsennys A (pilkuilla) ja B (ilman pilkkuja) (PLAN_PILKKU.md 3.4, 7.3/V5)."""
+"""Moduuli 2: Stanza-jäsennys (PLAN_PILKKU.md 3.4, 7.3/V5).
+
+Jäsennetään vain alkuperäinen teksti pilkkuineen. Pilkuton rinnakkaisjäsennys (B) poistettiin:
+se ei vaikuttanut varoituksiin (kokeet/tulokset.md, PLAN_KORJAUKSET.md K1)."""
 from __future__ import annotations
 
 import hashlib
 import os
 
 from . import conllu
-from .conllu import Sana, Lause
+from .conllu import ConlluVirke, Sana
 from .sanastot import LYHENTEET
 from .tyypit import Leipateksti, Virke
 
@@ -35,7 +38,7 @@ def putki(pretokenized: bool = False):
     return _putket[pretokenized]
 
 
-def _stanzasta(doc, valit: list[list[tuple[int, int]]] | None = None) -> list[Lause]:
+def _stanzasta(doc, valit: list[list[tuple[int, int]]] | None = None) -> list[ConlluVirke]:
     """Stanza-dokumentti CoNLL-U-lauseiksi. Jos valit on annettu (pretokenisoitu syöte),
     sanojen offsetit otetaan niistä, koska Stanza laskee ne syötteen omasta tekstistä."""
     lauseet = []
@@ -48,7 +51,7 @@ def _stanzasta(doc, valit: list[list[tuple[int, int]]] | None = None) -> list[La
                     w.id, w.text, w.lemma or "", w.upos or "", w.xpos or "",
                     conllu._feats_dict(w.feats or "_"), w.head or 0, w.deprel or "",
                     alku, loppu))
-        lauseet.append(Lause(sanat))
+        lauseet.append(ConlluVirke(sanat))
     return lauseet
 
 
@@ -119,65 +122,87 @@ def korjaa_virkejako(virkkeet: list[Sanavirke], teksti: str) -> list[Sanavirke]:
     return tulos
 
 
-def jasenna_sanat(virkkeet: list[Sanavirke], poista_pilkut: bool) -> list[Lause]:
-    """Vaihe 3: jäsennys valmiiksi pilkotuista sanoista (A: pilkut mukana, B: ilman)."""
+def jasenna_sanat(virkkeet: list[Sanavirke], poista_pilkut: bool = False) -> list[ConlluVirke]:
+    """Vaihe 3: jäsennys valmiiksi pilkotuista sanoista (pilkut mukana tai ilman)."""
     if poista_pilkut:
         virkkeet = [[s for s in v if s[0] != ","] for v in virkkeet]
     doc = putki(True)([[s[0] for s in v] for v in virkkeet])
     return _stanzasta(doc, [[(s[1], s[2]) for s in v] for v in virkkeet])
 
 
-def jasenna_A(teksti: str) -> list[Lause]:
-    return jasenna_sanat(korjaa_virkejako(tokenisoi(teksti), teksti), poista_pilkut=False)
-
-
-def jasenna_B(teksti: str, lauseet_A: list[Lause]) -> list[Lause]:
-    return jasenna_sanat([[(s.teksti, s.alku, s.loppu) for s in l.sanat] for l in lauseet_A],
-                         poista_pilkut=True)
+def jasenna_teksti(teksti: str) -> list[ConlluVirke]:
+    return jasenna_sanat(korjaa_virkejako(tokenisoi(teksti), teksti))
 
 
 def _avain(teksti: str) -> str:
     return hashlib.sha256((versiot() + "\n" + teksti).encode("utf-8")).hexdigest()[:16]
 
 
-def jasenna(leipa: Leipateksti, valimuisti: str | None = VALIMUISTI
-            ) -> tuple[list[Lause], list[Lause]]:
-    """Palauttaa jäsennykset A ja B CoNLL-U-lauseina. Käyttää välimuistia, jos annettu."""
-    hakemisto = os.path.join(valimuisti, _avain(leipa.teksti)) if valimuisti else None
-    if hakemisto and os.path.exists(os.path.join(hakemisto, "B.conllu")):
-        with open(os.path.join(hakemisto, "A.conllu"), encoding="utf-8") as f:
-            _, a = conllu.lue(f.read())
-        with open(os.path.join(hakemisto, "B.conllu"), encoding="utf-8") as f:
-            _, b = conllu.lue(f.read())
-        return a, b
-    a = jasenna_A(leipa.teksti)
-    b = jasenna_B(leipa.teksti, a)
-    if hakemisto:
-        os.makedirs(hakemisto, exist_ok=True)
-        for nimi, l in (("A", a), ("B", b)):
-            with open(os.path.join(hakemisto, f"{nimi}.conllu"), "w", encoding="utf-8") as f:
-                f.write(conllu.kirjoita(l, [versiot(), f"jasennys = {nimi}"]))
-    return a, b
+def _siirra(virkkeet: list[ConlluVirke], siirto: int) -> list[ConlluVirke]:
+    for v in virkkeet:
+        for s in v.sanat:
+            s.alku += siirto
+            s.loppu += siirto
+    return virkkeet
 
 
-def virkkeet(lauseet: list[Lause]) -> list[Virke]:
+def _kappaleittain(virkkeet: list[ConlluVirke], alut: list[int]) -> list[list[ConlluVirke]]:
+    """Jakaa virkkeet kappaleisiin ensimmäisen sanan offsetin mukaan (alut nousevina)."""
+    tulos: list[list[ConlluVirke]] = [[] for _ in alut]
+    k = 0
+    for v in virkkeet:
+        while k + 1 < len(alut) and v.sanat[0].alku >= alut[k + 1]:
+            k += 1
+        tulos[k].append(v)
+    return tulos
+
+
+def jasenna(leipa: Leipateksti, valimuisti: str | None = VALIMUISTI) -> list[ConlluVirke]:
+    """Palauttaa jäsennyksen CoNLL-U-lauseina.
+
+    Välimuisti on kappalekohtainen (avain = kappaleen teksti ja versiot, offsetit kappaleen
+    alusta), joten muokattu kappale jäsennetään uudelleen yksinään. Virkejaon korjaus ei ylitä
+    kappalerajaa, joten tulos on sama kuin koko tekstin jäsennyksessä. Puuttuvat kappaleet
+    jäsennetään yhdessä erässä."""
+    kappaleet = leipa.kappaleet or [(0, len(leipa.teksti))]
+    tekstit = [leipa.teksti[a:b] for a, b in kappaleet]
+    hakemisto = os.path.join(valimuisti, "kappaleet") if valimuisti else None
+    polut = [os.path.join(hakemisto, _avain(t) + ".conllu") if hakemisto else None
+             for t in tekstit]
+    tulos: list[list[ConlluVirke] | None] = [None] * len(kappaleet)
+    for n, polku in enumerate(polut):
+        if polku and os.path.exists(polku):
+            with open(polku, encoding="utf-8") as f:
+                tulos[n] = conllu.lue(f.read())[1]
+    puuttuvat = [n for n, t in enumerate(tulos) if t is None]
+    if puuttuvat:
+        alut, osat, pituus = [], [], 0
+        for n in puuttuvat:
+            alut.append(pituus)
+            osat.append(tekstit[n])
+            pituus += len(tekstit[n]) + 2
+        uudet = _kappaleittain(jasenna_teksti("\n\n".join(osat)), alut)
+        for n, alku, virkkeet_ in zip(puuttuvat, alut, uudet):
+            tulos[n] = _siirra(virkkeet_, -alku)
+            if polut[n]:
+                os.makedirs(hakemisto, exist_ok=True)
+                with open(polut[n], "w", encoding="utf-8") as f:
+                    f.write(conllu.kirjoita(tulos[n], [versiot()]))
+    return [v for (alku, _), virkkeet_ in zip(kappaleet, tulos)
+            for v in _siirra(virkkeet_, alku)]
+
+
+def virkkeet(lauseet: list[ConlluVirke]) -> list[Virke]:
     return [conllu.virkkeeksi(l) for l in lauseet]
 
 
-def tarkista(leipa: Leipateksti, a: list[Lause], b: list[Lause]) -> list[str]:
-    """Invariantit: offsetit osuvat tekstiin, A:n ja B:n virkkeet ja tokenit samat."""
+def tarkista(leipa: Leipateksti, a: list[ConlluVirke]) -> list[str]:
+    """Invariantti: sanojen offsetit osuvat tekstiin."""
     virheet = []
-    if len(a) != len(b):
-        virheet.append(f"virkkeitä A {len(a)}, B {len(b)}")
     for n, lause in enumerate(a):
         for s in lause.sanat:
             pala = leipa.teksti[s.alku:s.loppu]
             if not pala or (pala != s.teksti and len(pala) == len(s.teksti)
                             and pala.lower() != s.teksti.lower()):
-                virheet.append(f"A virke {n}: sana {s.teksti!r} osoittaa tekstiin {pala!r}")
-    for n, (va, vb) in enumerate(zip(virkkeet(a), virkkeet(b))):
-        ta = [(t.teksti, t.alku) for t in va.tokenit]
-        tb = [(t.teksti, t.alku) for t in vb.tokenit]
-        if ta != tb:
-            virheet.append(f"virke {n}: A:n ja B:n tokenit eroavat")
+                virheet.append(f"virke {n}: sana {s.teksti!r} osoittaa tekstiin {pala!r}")
     return virheet

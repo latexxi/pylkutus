@@ -1,20 +1,19 @@
 """Sanastoon perustuvat puuttuvan pilkun säännöt, jotka eivät riipu lauserajoista.
 
 Käytetään, koska puuttuva pilkku voi sekoittaa jäsennyksen (huomioi mitkä … → mitkä määritteenä).
-Palauttaa (rako, sääntö, pakko, varmuus).
+Tuottaa Paatos-olioita samaan ratkaisuun kuin lauserajasäännöt.
 """
 from __future__ import annotations
 
 from typing import Iterator
 
-from ..ajuri import Analyysi
-from ..lauseistaja import KYSYMYSSANAT
-from ..sanastot import KYSYMYSVERBIT
+from ..sanastot import KYSYMYSSANAT, KYSYMYSVERBIT
+from ..tyypit import Analyysi, Paatos, Pakko, Varmuus
 
 JALKISANAT_EI_KYSYMYS = {"tahansa", "hyvänsä", "ikinä", "vain", "muuta", "muutakaan", "kaikkea"}
 
 
-def s3_kysymysverbi(x: Analyysi) -> Iterator[tuple[int, str, str, str]]:
+def s3_kysymysverbi(x: Analyysi) -> Iterator[Paatos]:
     """S3: kysymysverbi + kysymyssana tai -ko/-kö-verbi ilman pilkkua."""
     tt = x.a.tokenit
     for i in range(1, len(tt)):
@@ -28,7 +27,7 @@ def s3_kysymysverbi(x: Analyysi) -> Iterator[tuple[int, str, str, str]]:
             and t.feats.get("Degree") != "Sup" and not seur.endswith(("in", "immin"))
         ko = "Ko" in t.feats.get("Clitic", "") and t.feats.get("VerbForm") == "Fin"
         if kysymyssana or ko:
-            yield (i, "S3", "kyllä", "medium")
+            yield Paatos(i, "S3", Pakko.KYLLA, Varmuus.MEDIUM)
 
 
 SAANNOT = [s3_kysymysverbi]

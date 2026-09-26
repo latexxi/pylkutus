@@ -3,13 +3,11 @@ from __future__ import annotations
 
 from functools import lru_cache
 
+from .sanastot import ALISTUS_MARK, KYSYMYSSANAT
 from .tyypit import Lause, Raja, Virke
 
 LAUSESUHTEET = {"root", "advcl", "ccomp", "acl:relcl", "conj", "parataxis", "acl", "xcomp",
                 "xcomp:ds"}
-AINA_LAUSE = {"root"}
-ALISTUS = {"että", "jotta", "koska", "kun", "kunnes", "jos", "vaikka", "jollei", "ellei",
-           "kunhan", "mikäli", "kuin", "ennen", "sillä"}
 FINIITTISET_MODUKSET = {"indicative", "conditional", "imperative", "potential"}
 SUBJEKTIT = {"nsubj", "nsubj:cop", "nsubj:pass", "csubj", "csubj:cop"}
 
@@ -21,27 +19,14 @@ def _voikko():
 
 
 @lru_cache(maxsize=100_000)
-def voikko_finiittinen(sana: str) -> bool:
-    """Onko Voikolla sanalle finiittinen analyysi. Tuntematon sana: True (ei kumota)."""
+def voikko_finiittinen(sana: str, tuntematon: bool = True) -> bool:
+    """Onko Voikolla sanalle finiittinen analyysi (moduksellinen muoto tai kieltosana).
+    Tuntemattomalle sanalle palautetaan `tuntematon`."""
     analyysit = _voikko().analyze(sana)
     if not analyysit:
-        return True
+        return tuntematon
     return any(a.get("CLASS") == "kieltosana" or a.get("MOOD") in FINIITTISET_MODUKSET
                for a in analyysit)
-
-
-@lru_cache(maxsize=100_000)
-def _voikko_vain_finiittinen_tai_kielto(sana: str) -> bool:
-    """Onko Voikolla sanalle finiittinen analyysi (tuntematon sana: False)."""
-    analyysit = _voikko().analyze(sana)
-    return any(a.get("CLASS") == "kieltosana" or a.get("MOOD") in FINIITTISET_MODUKSET
-               for a in analyysit)
-
-
-KYSYMYSSANAT = {"kuka", "mikä", "mitä", "minkä", "mitkä", "missä", "mistä", "mihin", "minne",
-                "milloin", "miksi", "miten", "kuinka", "millainen", "millaista", "millaisia",
-                "montako", "paljonko", "kumpi", "kenen", "ketä", "keitä", "kenelle", "keneltä",
-                "kenestä", "keneen", "kenet", "missään", "mille", "miltä", "millä", "mistään"}
 
 
 def on_lausesuhde(deprel: str) -> bool:
@@ -70,9 +55,9 @@ def finiittinen(v: Virke, paa: int, lps: list[list[int]] | None = None) -> bool:
     for c in lps[paa]:
         t = v.tokenit[c]
         if t.deprel.split(":")[0] in ("aux", "cop") and (
-                _fin_token(v, c) or _voikko_vain_finiittinen_tai_kielto(t.teksti)):
+                _fin_token(v, c) or voikko_finiittinen(t.teksti, tuntematon=False)):
             return True         # Stanza voi merkitä apuverbin väärin (pitää: Inf)
-        if t.deprel == "mark" and t.lemma.lower() in ALISTUS:
+        if t.deprel == "mark" and t.lemma.lower() in ALISTUS_MARK:
             return True
     return False
 
@@ -215,19 +200,6 @@ def _taydellisyys(v: Virke, l: Lause, lauseet: dict[int, Lause], lps) -> str:
             break
         ed = v.tokenit[ed].head - 1
     return "ratkaisematon"
-
-
-def yhdista(rajat_a: list[Raja], rajat_b: list[Raja]) -> list[Raja]:
-    """Merkitsee, löytyikö raja A:sta, B:stä vai molemmista. Palauttaa A:n rajat ja
-    vain B:ssä olevat rajat."""
-    b_avaimet = {(r.rako, r.laji) for r in rajat_b}
-    a_avaimet = {(r.rako, r.laji) for r in rajat_a}
-    for r in rajat_a:
-        r.lahde = "AB" if (r.rako, r.laji) in b_avaimet else "A"
-    vain_b = [r for r in rajat_b if (r.rako, r.laji) not in a_avaimet]
-    for r in vain_b:
-        r.lahde = "B"
-    return sorted(rajat_a + vain_b, key=lambda r: (r.rako, r.laji))
 
 
 def sulkeet(v: Virke, lauseet: list[Lause]) -> str:

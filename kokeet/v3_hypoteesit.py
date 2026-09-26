@@ -81,8 +81,11 @@ def main():
     virkkeet = [v for vv in HYPOTEESIT.values() for v in vv]
     teksti = "\n\n".join(virkkeet)
     leipa = lue_teksti(teksti)
-    a, b = jasennin.jasenna(leipa, valimuisti=None)
-    assert jasennin.tarkista(leipa, a, b) == [], jasennin.tarkista(leipa, a, b)
+    # A: alkuperäinen teksti; B: samat sanat ilman pilkkuja (B:tä ei enää käytetä putkessa)
+    a = jasennin.jasenna(leipa, valimuisti=None)
+    assert jasennin.tarkista(leipa, a) == [], jasennin.tarkista(leipa, a)
+    b = jasennin.jasenna_sanat([[(s.teksti, s.alku, s.loppu) for s in l.sanat] for l in a],
+                               poista_pilkut=True)
     assert len(a) == len(virkkeet), (len(a), len(virkkeet))
     va, vb = jasennin.virkkeet(a), jasennin.virkkeet(b)
     n = 0

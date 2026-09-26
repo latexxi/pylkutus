@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import bisect
 from dataclasses import dataclass, field
+from enum import StrEnum
 
 
 @dataclass
@@ -69,14 +70,51 @@ class Raja:
     lause: Lause             # lause, jonka alku tai loppu raja on
     ylempi: Lause | None     # lause, jonka sisällä raja on
     merkki: str | None       # "," tai None
-    lahde: str = "A"         # A | B | AB
 
 
 @dataclass
 class Varoitus:
     saanto: str              # esim. "S1"
-    varmuus: str             # high | medium | low
+    varmuus: str             # Varmuus: high | medium | low
     alku: int                # offset leipätekstiin
     loppu: int
     toimenpide: str          # lisaa | poista
     viesti: str
+
+
+class Pakko(StrEnum):
+    """Säännön päätös raosta: vaaditaanko pilkku."""
+    KYLLA = "kyllä"
+    VALINNAINEN = "valinnainen"
+    EI = "ei"
+
+
+class Varmuus(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+    @property
+    def taso(self) -> int:
+        return ("low", "medium", "high").index(self.value)
+
+    def alennettu(self) -> Varmuus:
+        """Yhtä astetta matalampi (low pysyy low'na)."""
+        return Varmuus(("low", "low", "medium")[self.taso])
+
+
+@dataclass(frozen=True)
+class Paatos:
+    """Yhden säännön päätös yhdestä raosta."""
+    rako: int
+    koodi: str
+    pakko: Pakko
+    varmuus: Varmuus
+
+
+@dataclass
+class Analyysi:
+    """Yhden virkkeen analyysi sääntöjä varten."""
+    a: Virke
+    lauseet: list[Lause]
+    rajat: list[Raja]
