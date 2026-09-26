@@ -247,6 +247,9 @@ sivulauseen alut. Suurin aukko: *-ko/-kö*-kysymykset ja täydellisten päälaus
 
 ## 3. Tunnistusmenetelmä
 
+Tämä luku kuvaa toteutuksen tilanteessa 2026-09-26. Suunnitteluvaiheen päätösten perustelut
+ja kokeiden tulokset: `kokeet/tulokset.md` ja `arviointi/tulokset.md`.
+
 ### 3.1 Periaatteet
 
 - **Yksikkö on lause virkkeen sisällä**, ei token. Pilkkusäännöt koskevat lauseiden välisiä
@@ -254,249 +257,277 @@ sivulauseen alut. Suurin aukko: *-ko/-kö*-kysymykset ja täydellisten päälaus
 - **Rajojen tunnistus ei saa nojata pilkkuihin**, koska juuri puuttuvat pilkut ovat etsinnän
   kohde. Rajat päätellään sanoista, verbeistä ja jäsennyksestä.
 - **Deterministisyys:** sama syöte ja samat mallit antavat aina saman tuloksen. Stanza ajetaan
-  CPU:lla, koska GPU-laskenta (CUDA) ei ole bittitarkasti toistettavaa. Kiinnitetään `stanza`-,
-  `torch`- ja malliversio.
+  CPU:lla, koska GPU-laskenta (CUDA) ei ole bittitarkasti toistettavaa. Versiot (`stanza`,
+  `torch`, malli, virkejaon versio) kirjataan jäsennystiedostoihin ja välimuistin avaimeen.
 - **Varoitus osoittaa lähdetiedoston riviin ja sarakkeeseen.** Tiedostoa ei muokata.
 - **Jäsennyksen on voitettava lähtötaso.** Jäsennykseen perustuva sääntö otetaan käyttöön vain,
-  jos se parantaa sanalistaan perustuvan lähtötason tulosta testiaineistossa (luku 5).
+  jos se parantaa sanalistaan perustuvan lähtötason tulosta (luku 5). Toteutunut: ks. 7.5.
+- **Kun puuttuva pilkku sekoittaa jäsennyksen, tarvitaan sanastosääntö.** Pilkuton kohta
+  jäsentyy usein väärin juuri siinä, missä pilkku puuttuu (*huomioi mitkä kuusi …* →
+  *mitkä* määritteenä). Siksi osa säännöistä toimii sanastolla ilman lauserajaa (3.6).
 
 ### 3.2 Arkkitehtuuri: yksi paketti, vaiheet moduuleina
 
-Ohjelmisto on yksi Python-paketti. Vaiheet ovat erillisiä moduuleja, joilla on selvät
-rajapinnat (dataluokat), joten jokaisen voi testata ja vaihtaa erikseen. Erillisiä prosesseja ja
-JSON-välitiedostoja ei tarvita: yhden dokumentin käsittely kestää minuutteja.
-
-Tiedostoon talletetaan vain jäsennykset (`.conllu`), koska jäsennys on ainoa raskas vaihe.
-Sääntöjä muutettaessa sitä ei ajeta uudelleen. Muut välitulokset voi tulostaa JSON-muodossa
-virheenetsintää varten (`--dump`).
+Ohjelmisto on yksi Python-paketti (`pylkutus/`). Vaiheet ovat erillisiä moduuleja, joilla on
+selvät rajapinnat (dataluokat, `tyypit.py`), joten jokaisen voi testata erikseen. Tiedostoon
+talletetaan vain jäsennykset (`.conllu`, välimuisti `.cache/`), koska jäsennys on ainoa raskas
+vaihe: koko 300 000 merkin dokumentti jäsentyy CPU:lla noin 4 minuutissa, välimuistista koko
+tarkistus kestää noin 3 sekuntia.
 
 ```
 alkuperäinen.md
-  │ 1. esikasittelija  → leipäteksti + offset-kartta
-  │ 2. jasennin        → jasennys_A.conllu + jasennys_B.conllu   (välimuisti)
-  │ 3. lauseistaja     → lauseet ja rajat
-  │ 4. saantotarkistin → varoitukset
+  │ 1. esikasittelija  → Leipateksti (teksti + offset-kartta)
+  │ 2. jasennin        → A.conllu + B.conllu            (välimuisti .cache/<avain>/)
+  │ 3. lauseistaja     → Lause- ja Raja-oliot virkkeittäin (ajuri.Analyysi)
+  │ 4. saantotarkistin → Varoitus-oliot
   ▼ 5. raportoija      → tiedosto:rivi:sarake: [varmuus/sääntö] viesti
 ```
 
 | # | Moduuli | Syöte | Tuloste | Työkalut |
 |---|---|---|---|---|
-| 1 | `esikasittelija` | alkuperäinen teksti (md, myöhemmin txt/odt) | leipäteksti, offset-kartta | Python, Voikko (tavutus) |
-| 2 | `jasennin` | leipäteksti | `jasennys_A.conllu`, `jasennys_B.conllu` | Stanza |
-| 3 | `lauseistaja` | jäsennykset | lauseet ja rajat | Python |
-| 4 | `saantotarkistin` | lauseet ja rajat, tokenit | varoitukset | Python, sanastot, (Voikko?) |
-| 5 | `raportoija` | varoitukset, offset-kartta, alkuperäinen | tekstiraportti | Python |
+| 1 | `esikasittelija` | md- tai tekstitiedosto | `Leipateksti`, loki karsituista riveistä | Python |
+| 2 | `jasennin`, `conllu` | leipäteksti | jäsennykset A ja B (CoNLL-U), `Virke`-oliot | Stanza |
+| 3 | `lauseistaja` | `Virke` | `Lause`- ja `Raja`-oliot | Python, Voikko (finiittisyys) |
+| 4 | `saantotarkistin`, `saannot/` | `ajuri.Analyysi` | `Varoitus`-oliot | Python, `sanastot` |
+| 5 | `raportoija` | varoitukset, `Leipateksti` | tekstiraportti | Python |
 
-Komentorivin ajuri (`pylkuta tiedosto.md`) ajaa koko putken ja käyttää välimuistissa olevaa
-jäsennystä, jos leipäteksti ja malliversio eivät ole muuttuneet.
+`ajuri.py` kokoaa vaiheet (`lue`, `analysoi`, `dump`), `__main__.py` on komentorivi
+(`pylkuta`).
 
 Voikon rooli:
-- **Tavutuksen purku** esikäsittelijässä.
-- **Mahdollinen apulainen** sääntötarkistimessa (finiittisyys, monitulkintaiset sanat).
-  Stanzan morfologia voi tehdä tämän tarpeettomaksi; päätetään Stanza-kokeen jälkeen.
-- **Oikeinkirjoitus** ei kuulu pilkkuputkeen (ks. 3.8).
-- Voikko **ei** tunne pilkkusääntöjä (testattu: puuttuvia pilkkuja ennen *että, mutta, joka*
-  ei havaittu).
+- **Finiittisyyden tarkistus** lauseistajassa: Stanzan `VerbForm=Fin` hyväksytään vain, jos
+  Voikolla on sanalle finiittinen analyysi; apu- ja kopulaverbille riittää Voikon analyysi
+  (Stanza merkitsi *pitää*-apuverbin infinitiiviksi). Ks. 3.5.
+- **Tavutuksen purku** tarvitaan vasta txt-syötteelle (md-aineistossa ei tavutusviivoja).
+- **Oikeinkirjoitus** ei kuulu pilkkuputkeen (3.8).
+- Voikko **ei** tunne pilkkusääntöjä (testattu).
 
-Ympäristö: `~/pylkutus/.venv`, luotu komennolla
-`/usr/bin/python3 -m venv --system-site-packages`, jotta `libvoikko` (järjestelmän paketti) ja
-pip-asennettu Stanza toimivat samassa ympäristössä. Vaatii paketin `python3.12-venv`.
-Asennettu: `stanza` 1.14.0, `torch` 2.14.0.
-UDPipe 1 (`ufal.udpipe`) on valinnainen vertailujäsennin myöhemmin.
+Ympäristö: `.venv`, luotu komennolla `/usr/bin/python3 -m venv --system-site-packages`, jotta
+`libvoikko` (järjestelmän paketti) ja pip-asennettu Stanza toimivat samassa ympäristössä.
+Paketti asennetaan muokattavana (`pip install -e .`). Versiot: `stanza` 1.14.0, `torch`
+2.14.0, suomen malli `fi/default` (= `combined`, opetettu UD_Finnish-TDT:llä ja -FTB:llä).
 
-### 3.3 Moduuli 1: esikäsittelijä
+### 3.3 Moduuli 1: esikäsittelijä (`esikasittelija.py`)
 
 Tehtävä: poimia **leipäteksti** ja säilyttää paikkatieto.
 
-- Karsitaan: otsikot, sivunumerot, ylä- ja alatunnisteet, sisällysluettelo, kuvatekstit,
-  span-tagit ja muu markup, `*`/`_`-korostukset, `\`-merkit, pehmeät tavuviivat (U+00AD).
-- **Otsikot tunnistetaan ensisijaisesti rakenteesta** (md:n `#`-otsikot). Lyhyen rivin
-  heuristiikka (alle ~30 merkkiä, ei virkkeen loppumerkkiä) on vain varakeino rakenteettomille
-  riveille, eikä sitä sovelleta riveihin, joissa on lainausmerkki tai ajatusviiva (repliikit).
-- Rivin lopun tavutusviivat puretaan: *toipu-*⏎*minen* → *toipuminen*. Viiva säilyy, jos
-  yhdistetty sana ei ole Voikon mukaan oikein mutta viivallinen on (*AA-*⏎*laiset*).
-- Kappaleen sisäiset rivinvaihdot muutetaan välilyönneiksi; kappaleraja säilyy tyhjänä rivinä.
-- Jokainen karsittu rivi kirjataan lokiin, jotta näkee, ettei leipätekstiä hävinnyt.
-- **Offset-kartta:** leipätekstin jokaiselle merkkivälille alkuperäisen tiedoston rivi ja
-  sarake. Ilman tätä varoitukset eivät osu alkuperäisiin riveihin.
+- Tiedosto jaetaan **lohkoihin**: peräkkäiset ei-tyhjät rivit ovat yksi kappale; `#`-otsikko ja
+  luettelon kohta (`1.  …`, `- …`) ovat aina omia lohkojaan.
+- `#`-otsikot karsitaan. **Otsikon kaltainen lohko** ilman `#`-merkkiä karsitaan, jos
+  siivottu teksti ei pääty loppumerkkiin (`. ? ! : … " ” » ) — –`), on alle 100 merkkiä eikä
+  sisällä virkerajaa (tai on kokonaan `**lihavoitu**`). Pituusraja yksin ei riitä: lyhyt oikea
+  virke (*Kaveri oli tietysti oikeassa.*) päättyy pisteeseen.
+- Kappaleista poistetaan merkintä: `<span …>`, `**`, `__`, `*`/`_`-korostus, `\`-merkit,
+  pehmeä tavuviiva (U+00AD), toimittajan muistiinpano `++ … ++ …` ja rivin lopun välilyönnit.
+  Luettelon numero poistetaan; kohta säilyy omana kappaleenaan.
+- Kappaleen sisäiset rivinvaihdot muuttuvat välilyönneiksi, kappaleraja on `\n\n`.
+- Jokainen karsittu rivi ja poistettu merkintä kirjataan lokiin.
+- **Offset-kartta** (`Leipateksti.kartta`): leipätekstin jokaiselle merkille alkuperäisen
+  merkin indeksi; `rivi_sarake(i)` antaa 1-pohjaisen rivin ja sarakkeen. Invariantti
+  `alkuperainen[kartta[i]] == teksti[i]` (paitsi rivinvaihdosta syntyneet merkit) tarkistetaan
+  testeissä koko dokumentilla.
+- `lue_teksti()` lukee valmiin leipätekstin (kultainen otos) identiteettikartalla.
 
-**Havainnot aineistosta** (`~/Documents/ratkaisu/2026-09-14 ratkaisu.md`, tarkistettu 2026-09-26):
-- 2058 riviä, joista 1002 tyhjää. Jokainen kappale on yhdellä rivillä, joten kappaleen sisäisiä
-  rivinvaihtoja ei ole.
-- Rivin lopun tavutusviivoja ei ole (0 kpl), joten tavutuksen purkua ja Voikkoa ei tarvita
-  md-syötteelle. Toiminto toteutetaan vasta txt-syötteen yhteydessä.
-- 117 `#`-otsikkoa ja 97 `<span id="anchor-N">`-ankkuria (odt-muunnoksen jäänteitä), 2 pehmeää
-  tavuviivaa (*e­sittelee*), `**lihavointi**` ja rivin lopun kaksoisvälilyönti (md:n rivinvaihto).
-- 66 luettelon riviä (`1.  Mikä oli ongelma`). Luettelon kohta säilytetään omana kappaleenaan,
-  koska se jäsennetään omana virkkeenään eikä haittaa muuta tekstiä.
-- Alussa on otsikon kaltaisia rivejä ilman `#`-merkkiä (*OPASTUS ISON KIRJAN OHJELMAAN*).
-  Ne tunnistetaan heuristiikalla (ei virkkeen loppumerkkiä, lyhyt tai kokonaan isoilla
-  kirjaimilla).
-- Lyhyt oikea virke on olemassa (*Kaveri oli tietysti oikeassa.*), joten pelkkä pituusraja ei
-  riitä otsikon tunnistukseen: loppumerkki ratkaisee.
+**Havainnot aineistosta** (`2026-09-14 ratkaisu.md`, 2026-09-26): 2058 riviä, jokainen
+kappale yhdellä rivillä, ei rivin lopun tavutusviivoja, 117 `#`-otsikkoa, 97 span-ankkuria
+(odt-muunnoksen jäänteitä, vain otsikoissa), 2 pehmeää tavuviivaa, 66 luettelon riviä, yksi
+muistiinpano (rivi 445). Tulos: 931 kappaletta, 125 karsittua riviä (117 otsikkoa, 8 otsikon
+kaltaista).
 
-### 3.4 Moduuli 2: jäsennin
+### 3.4 Moduuli 2: jäsennin (`jasennin.py`, `conllu.py`)
 
-**Virkkeet ja tokenit**
-- Stanzan tokenisointi ja virkkeiden erottelu, jonka tulos tarkistetaan suomen ansoja vasten:
-  lyhenteet (*tri., jne., esim., ns., mm., vrt., klo, s.*), järjestysluvut (*14. päivä*),
-  päiväykset, nimikirjaimet (*Bill W.*), kolme pistettä, lainauksen sisäinen `?`/`!`
-  (*"Tuletko?" hän kysyi*).
-- Tarvittaessa oma esierottelu (lyhennelista) ja Stanzalle valmiiksi pilkotut virkkeet.
-- Luvut ja alueet (*10-21*, *3,5*) eivät saa hajota pilkuiksi.
-- **Tokenisointi tehdään kerran**, jäsennyksen A yhteydessä.
+Jäsennys tehdään kolmessa vaiheessa, jotta A ja B saavat täsmälleen samat sanat:
 
-**Kaksoisjäsennys**
-- **Jäsennys A:** virke sellaisenaan (Stanzan tokenisointi ja jäsennys).
-- **Jäsennys B:** A:n tokenit, joista erottavat pilkut on poistettu, syötetään Stanzalle
-  valmiiksi tokenisoituna (`tokenize_pretokenized=True`). Virkejako ja tokenit ovat siksi
-  identtiset, kohdistus on pelkkä indeksikartta ja offsetit periytyvät A:sta.
-- Vain pilkkutokenit poistetaan. Desimaalipilkku on osa lukutokenia, eikä siihen kosketa
-  (koeskriptin `strip_commas` poistaa nyt myös desimaalipilkut ja korjataan).
-- Molemmat CoNLL-U-muodossa. Jokaiseen tokeniin talletetaan offset leipätekstiin
-  (`MISC`-sarakkeessa, esim. `start_char=…|end_char=…`).
-- Mallin versio kirjataan tiedoston alkuun (deterministisyys ja välimuistin mitätöinti).
+1. **Tokenisointi** (`tokenisoi`): Stanzan `tokenize,mwt`. MWT-tokenin sanat (*ettei* →
+   *että* + *ei*) saavat tokenin merkkivälin.
+2. **Virkejaon korjaus** (`korjaa_virkejako`):
+   - lyhenne ja piste yhdeksi sanaksi (`sanastot.LYHENTEET`: *tri., esim., jne.* …) ja
+     nimikirjain (*W.*)
+   - virke jatkuu, jos edellinen päättyy lyhenteeseen, jos seuraava alkaa pienellä kirjaimella
+     (*"Tuletko?" hän kysyi*) tai jos edellinen **ei pääty loppumerkkiin**. Stanza katkaisee
+     virkkeen ison alkukirjaimen kohdalta (*ymmärrät ‖ Isoa kirjaa*); korjaus yhdisti
+     aineistossa 78 väärää katkoa.
+   - virke ei koskaan jatku kappalerajan yli.
+3. **Jäsennys valmiiksi pilkotuista sanoista** (`tokenize_pretokenized=True`):
+   - **A:** sanat sellaisinaan
+   - **B:** samat sanat ilman pilkkutokeneita.
 
-### 3.5 Moduuli 3: lauseistaja
+Molemmat jäsennetään sanoista, koska pretokenisoitu syöte ei laukaise MWT-laajennusta: jos A
+jäsennettäisiin tekstistä, *ettei* olisi A:ssa kaksi sanaa ja B:ssä yksi.
 
-Tehtävä: UD-puusta lauseet ja niiden väliset rajat.
+- Desimaalipilkku (*3,5*) on osa lukutokenia eikä muutu raoksi.
+- CoNLL-U: sanat (ei MWT-rivejä), `MISC`-sarakkeessa `start_char=…|end_char=…`
+  leipätekstiin. Tiedoston alussa versiot.
+- **Välimuisti:** `.cache/<sha256(versiot + leipäteksti)>/A.conllu, B.conllu`. Avaimessa on
+  `VIRKEJAKO_VERSIO`, jota kasvatetaan, kun tokenisointi tai virkejaon korjaus muuttuu.
+- `virkkeeksi()` muuntaa CoNLL-U-lauseen `Virke`-olioksi: **vain pilkut** siirretään rakoihin
+  (`rako[i] = ","`), muut välimerkit jäävät tokeneiksi. Jos sanan pää on pilkku, pääksi tulee
+  pilkun pää.
+- `tarkista()` tarkistaa invariantit: offsetit osuvat tekstiin, A:ssa ja B:ssä samat virkkeet
+  ja tokenit.
 
-Pilkku tallennetaan tokenien väliseen rakoon (`comma_before[i]`), ei omaksi tokeniksi. Samoin
-muut rajamerkit (1.15).
+Tunnettu virhe: Stanzan MWT jakaa joskus sanan väärin (*ongelmaani* → *ongelmaan* + *i*).
 
-**Lauseen pää** (*clause head*) on sana, jolla on jokin seuraavista suhteista. Vastaavuus on
-hypoteesi, joka tarkistetaan Stanza-kokeessa (vaihe V3, luku 7).
+### 3.5 Moduuli 3: lauseistaja (`lauseistaja.py`)
 
-| UD-suhde | Merkitys | Säännöt |
-|---|---|---|
-| `root` | päälause | — |
-| `advcl` | adverbiaalilause (kun, jos, koska, vaikka) | S1, S1e |
-| `ccomp` | että-lause, epäsuora kysymys | S1, S1e, S3 |
-| `acl:relcl` | relatiivilause, myös *se mitä tapahtui* (kiinnittyy *se*-sanaan) | S2, S2a, K1–K3 |
-| `csubj`, `csubj:cop` | korrelaatiton subjektilause (*Mitä tapahtui, oli outoa.*) | S2b, K3 |
-| `conj` (verbiin) | rinnasteinen lause | R1, R2, S4 |
-| `parataxis` | rinnastus ilman konjunktiota | R1 |
+Tehtävä: UD-puusta lauseet ja niiden väliset rajat. V3-kokeen tulokset: `kokeet/tulokset.md`.
 
-**Finiittisyys (L1).** Lause on finiittinen, jos jokin seuraavista pätee:
-- pää on `VerbForm=Fin`
-- pään `aux`- tai `cop`-lapsi on `VerbForm=Fin`
+**Lausesuhteet.** Lauseen pää on sana, jolla on jokin seuraavista suhteista:
+
+| UD-suhde | Lause, jos | Tyyppi | Säännöt |
+|---|---|---|---|
+| `root` | aina | paa | — |
+| `advcl` | finiittinen | sivu | S1, S1e, V1, V2, V5 |
+| `ccomp` | finiittinen | sivu tai kysymys | S1, S1e, S3 |
+| `acl:relcl` | finiittinen | relatiivi (myös *se mitä tapahtui*) | S2, S2a, K1–K3 |
+| `csubj*` | finiittinen | relatiivi tai kysymys (*Mitä tapahtui, oli outoa*) | S2b, K3 |
+| `acl` | finiittinen **ja** `mark`-lapsi | sivu | S1 (ilman `mark`:ia partisiippimääre: *liittyvät pelkosi*) |
+| `xcomp`, `xcomp:ds` | finiittinen | sivu | – |
+| `conj`, `parataxis` | finiittinen | rinnasteinen | R1–R4, S4, S6 |
+
+Ei-finiittiset `advcl`/`acl`/`xcomp` ovat **lauseenvastikkeita**: ne ovat lauselistassa
+(`finiittinen=False`, sääntöä L1 varten), mutta eivät tuota rajoja.
+
+**Finiittisyys.** Lause on finiittinen, jos jokin pätee:
+- pää on `VerbForm=Fin` ja Voikolla on sille finiittinen analyysi (tai Voikko ei tunne sanaa)
+- pään `aux`- tai `cop`-lapsi on finiittinen (Stanza + Voikko) tai Voikolla on sille
+  finiittinen analyysi
 - päällä on `mark`-lapsi, joka on alistuskonjunktio.
 
-Stanzan `VerbForm=Fin` hyväksytään vain, jos Voikolla on sanalle finiittinen analyysi tai
-Voikko ei tunne sanaa (V3: *auttaaksemme* oli merkitty finiittiseksi; ks. `kokeet/tulokset.md`).
+Pelkkä pään `VerbForm` ei riitä: kieltolauseen (*ei tullut*), perfektin (*on lähtenyt*) ja
+kopulalauseen (*on opettaja*) pää on partisiippi tai nomini. Voikko kumoaa Stanzan virheen
+*auttaaksemme* = `Fin` (vain A-infinitiivi) ja korjaa *pitää* = `Inf`.
 
-Pelkkä pään `VerbForm` ei riitä, koska suomen UD:ssä monen finiittisen lauseen pää on
-partisiippi tai nomini:
-- kieltolause *kun hän ei tullut*: pää *tullut* (`Part`), *ei* on `aux`
-- perfekti *koska hän on lähtenyt*: pää `Part`, *on* on `aux`
-- kopulalause *vaikka hän on opettaja*: pää *opettaja*, *on* on `cop`.
+**Kysymys.** `ccomp`/`csubj`, jonka ensimmäinen sana on `PronType=Int`, *-ko/-kö*-sana
+(`Clitic=Ko`) tai kysymyssanalistassa (`KYSYMYSSANAT`: *kuinka* on ADV ilman `PronType`:a).
+`ccomp` + `PronType=Rel` on myös kysymys (Stanza merkitsee *missä* välillä `Rel`).
 
-Ei-finiittiset `advcl`, `acl` ja `xcomp` ovat lauseenvastikkeita, eikä niitä eroteta pilkulla.
+**Täydellinen vai vajaa rinnasteinen lause (R1, R2, R3):**
+- oma `nsubj*`/`csubj*` tai eksistentiaalilause (partitiivinen nominipää + *olla*-kopula:
+  *ei ole mitään syytä*) → täydellinen
+- 1./2. persoona tai passiivi (myös perfektin passiivi *on singottu*) → täydellinen,
+  `r1a=True` (pilkku valinnainen)
+- subjekti löytyy `conj`-ketjun aiemmasta lauseesta → vajaa (*palasi … mutta jatkaa ja
+  katkaisee*)
+- muuten ratkaisematon.
 
-**Täydellinen vai vajaa lause (R1, R2, R3).** Pelkkä `nsubj`-suhteen puuttuminen ei tee lauseesta
-vajaata. Monessa täydellisessä lauseessa ei ole `nsubj`:ia: eksistentiaalilause (*Salilla on
-hiljaista*), nesessiivilause (*Minun täytyy lähteä*), säälause (*Sataa*), passiivi sekä 1. ja 2.
-persoonan lause ilman pronominia (*Tulin kotiin*). Päättely (alustava, tarkistetaan kokeessa):
-- `conj`-lauseella on oma `nsubj` tai `nsubj:cop`: täydellinen.
-- Ei subjektia, verbi 1./2. persoonassa tai passiivissa: täydellinen, mutta R1a:n mukaan
-  pilkku on valinnainen.
-- Ei subjektia, verbi 3. persoonassa, ja edellisellä rinnasteisella lauseella on subjekti,
-  joka sopii verbin kanssa: vajaa (yhteinen subjekti).
-- Muut tapaukset (esim. eksistentiaali-, nesessiivi- ja säälauseet): ratkaisematon, joten
-  varoitus annetaan korkeintaan matalalla varmuudella.
+**Jänne.** Alipuun ensimmäinen ja viimeinen ei-välimerkkitoken. Epäjatkuva jänne
+(`projektiivinen=False`) ei tuota rajoja.
 
-Jokaisesta lauseesta talletetaan:
-- ensimmäinen ja viimeinen token (lauseen jänne alipuusta)
-- tyyppi (pää-, sivu-, relatiivi-, kysymys- tai rinnasteinen lause)
-- aloittava sana: `mark`/`cc`/relatiivi- tai kysymyssana
-- finiittisyys (yllä) sekä täydellisyys, persoona ja passiivi (R1, R1a, R2)
-- upotettu vai ei (jatkuuko ylempi lause sen jälkeen) → S1e, S2a, K3
-- onko virkkeen alussa tai lauseen alussa rinnastuskonjunktion jälkeen → K2, M3, 1.4:n rajatapaus
+**Raja** (`Raja`) on rako *i* (tokenien *i−1* ja *i* välissä):
+- `laji="alku"`: lause alkaa raosta (ei virkkeen alussa)
+- `laji="loppu"`: lause päättyy ja ylempi lause jatkuu (`upotettu`).
 
-**Raja** on tokenien väli *i* (tokenien *i−1* ja *i* välissä), jossa jonkin lauseen jänne alkaa
-tai päättyy muualla kuin virkkeen reunalla. Kaksi jäsennystä löytävät saman rajan, jos väli on
-sama; lausetyyppi saa erota. Jokaisesta rajasta talletetaan: sijainti, lauseet molemmin puolin,
-onko pilkku, onko muu rajamerkki (1.15) ja löytyikö raja jäsennyksestä A, B vai molemmista.
+Rajaa ei tehdä, jos ylempi lause on ei-finiittinen verbi (puu todennäköisesti väärin).
+`yhdista()` merkitsee, löytyikö raja A:sta, B:stä vai molemmista (`lahde`).
 
-### 3.6 Moduuli 4: sääntötarkistin
+`sulkeet()` tulostaa virkkeen lausesuluin tarkistusta varten:
+`[[Kun tulin kotiin]advcl , söin]root .`
 
-- Jokaiselle rajalle haetaan sääntö luvun 1 taulukoista: vaaditaanko pilkku, onko se kielletty
-  vai valinnainen.
-- Jos rajalla on muu rajamerkki (ajatusviiva, sulkeet, kaksoispiste, puolipiste), pilkkua ei
-  vaadita.
-- Sanastot (ja tarvittaessa Voikko) hoitavat erikoistapaukset ennen sääntöä:
-  - moniosaiset ilmaukset (*heti kun, sen jälkeen kun, niin että*): pilkku joko ilmauksen eteen
-    tai sen sisälle (M1)
-  - kaksi peräkkäistä konjunktiota (S1b)
-  - ei-sidesanat (*joka kerta, sillä hetkellä, kuka tahansa, mitä* + superlatiivi, luku 1.14)
-  - *kuin*-vertailu (V1), *kuten* (V4/V5), parirakenteet (P1–P6)
-- Lisäksi pilkut, jotka eivät ole millään rajalla, tarkistetaan (luku 1.13: lauseenvastike,
-  A1/A2, V1 …).
-- Jokainen sääntö on oma funktionsa, tunnuksena luvun 1 koodi (S1, R3 …).
+### 3.6 Moduuli 4: sääntötarkistin (`saantotarkistin.py`, `saannot/`)
 
-**Varmuus: puuttuvat pilkut** arvioidaan jäsennyksestä A. Kun pilkku puuttuu, A:n syötteestä
-se puuttuu jo valmiiksi, ja B eroaa A:sta vain muiden pilkkujen osalta. B ei siis tuo kohtaan
-lisänäyttöä. Varmuus määräytyy säännön tunnistusluokasta (helppo/keski/vaikea) ja siitä,
-perustuuko sääntö sanalistaan vai jäsennykseen.
+Sääntö palauttaa **päätöksen** `(koodi, pakko, varmuus)`, jossa `pakko` on `kyllä`, `ei` tai
+`valinnainen`. Tarkistin kokoaa päätökset raoittain:
 
-**Varmuus: ylimääräiset pilkut** arvioidaan A/B-vertailulla. B on jakauman ulkopuolella, koska
-malli on opetettu pilkutetulla tekstillä. Se on siis heikompi jäsennys eikä neutraali todistaja,
-ja sitä käytetään vain tukena.
+| Päätökset raossa | Pilkku puuttuu | Pilkku paikalla |
+|---|---|---|
+| jokin `ei` | ei varoitusta | ylimääräinen, jos mikään ei vaadi (varmuus yhtä pykälää matalampi) |
+| `kyllä`, ei `valinnainen` | **puuttuva pilkku** (varmin päätös) | kunnossa |
+| `valinnainen` | vain `--tyyli` | kunnossa |
 
-| Raja A | Raja B | Pilkku | Tulkinta |
-|---|---|---|---|
-| on | on/ei | ei | puuttuva pilkku, jos sääntö vaatii (B ei vaikuta) |
-| ei | on | ei | ei varoitusta oletuksena; `--min low` näyttää (B:n raja voi olla jäsennysvirhe) |
-| ei | ei | ei | kunnossa |
-| on | on | on | kunnossa |
-| on | ei | on | mahdollisesti ylimääräinen (raja syntyi pilkun ansiosta); varoitus vain, jos sanastosääntö (1.13) tukee |
-| ei | on | on | epäjohdonmukainen (A ei näe rajaa pilkusta huolimatta); ei varoitusta, kirjataan lokiin |
-| ei | ei | on | pilkku ilman rajaa: tarkistetaan luvun 1.13 säännöt (lauseenvastike, A1/A2, V1 …) |
+Rajamerkki (1.15) raossa tai sen vieressä (lainausmerkkien yli) antaa päätöksen `ei` eikä tuota
+ylimääräisen pilkun varoitusta.
 
-Sääntötaulukon *pakko*-sarake painaa: *valinnainen* ei tuota varoitusta oletuksena.
+**Rajasäännöt** (`saannot/puuttuvat.py`, vain A:n rajat):
 
-### 3.7 Moduuli 5: raportoija
+| Tilanne | Päätös |
+|---|---|
+| alku, edellä `mark`/`cc` tai rinnastuskonjunktio | S1b `ei` |
+| alku, lause alkaa `cc`:llä (*ja jos ehdin*, *, mutta kun*) | ei päätöstä |
+| alku, *ennen kuin* | V2 `valinnainen` |
+| alku, moniosainen ilmaus lauseen alussa tai ennen `mark`:ia (*heti kun*) | M1 `kyllä` high; pilkku ilmauksen sisällä → `valinnainen`; rinnastuksen jälkeen M3 `ei` |
+| alku, `mark` *sillä* | R4 `kyllä` medium |
+| alku, `mark` *kuin* | V1 `ei` |
+| alku, `mark` *kuten* | V5 `kyllä` medium |
+| alku, hyvin lyhyt virke | S1a `valinnainen` |
+| alku, muu `mark` | S1 `kyllä` high |
+| alku, kysymys | S3 `kyllä` medium |
+| alku, relatiivi, edellä *se* | virkkeen alussa K2 `valinnainen`; rinnastuksen jälkeen K1 low (1.4); muuten K1 medium |
+| alku, relatiivi | S2 `kyllä` medium |
+| alku, rinnasteinen, ylempi sivulause | *ja/tai* S4 `ei` (relatiivilauseeseen liitetty, oma subjekti → R1 low); *mutta* R3; muu S6 low |
+| alku, rinnasteinen päälause | *sillä* R4 medium; *mutta/vaan* R3 (täydellinen medium, vajaa `valinnainen`); *ja/tai/eikä* vajaa R2 `ei`, `r1a` R1a `valinnainen`, muuten R1 `kyllä` low; ilman konjunktiota S6 low |
+| loppu, seuraava token välimerkki tai *ja/mutta* | ei päätöstä |
+| loppu | S1e / S2a / K3 `kyllä` low |
 
-- Yhdistää varoitukset offset-karttaan.
-- Tuloste: `tiedosto:rivi:sarake: [varmuus/sääntö] viesti`, konteksti ja ehdotus.
-- Suodatus: `--min high|medium|low`, `--rule S1`, `--tyyli` (valinnaiset pilkut mukaan).
+*Eikä, emmekä, eivätkä* käsitellään kuten *ja*.
+
+**Sanastosäännöt** (`saannot/sanasto.py`) lisäävät päätöksiä rakoihin, joissa jäsennys ei
+näe rajaa: **S3** kysymysverbi (`sanastot.KYSYMYSVERBIT`: *tietää, huomioida, katsoa* …) +
+kysymyssana tai *-ko*-verbi ilman pilkkua (medium).
+
+**Ylimääräisen pilkun säännöt** (`saannot/ylimaaraiset.py`):
+- **V1:** komparatiivi (tai *muu, toinen, enemmän, vähemmän*) + pilkku + *kuin* (medium)
+- **L1:** virkkeen alussa oleva lauseenvastike + pilkku (medium; yli 5 sanaa low; *kuten
+  sanottu* ei)
+- **A1/A2:** lauseen alun asenne- tai järjestyssana + pilkku (`valinnainen`, vain `--tyyli`).
+
+B:n rajoja (ks. `kokeet/tulokset.md`: B jäsentää upotetut lauseet väärin) ei käytetä
+päätöksiin; `lahde` näkyy `--dump rajat`-tulosteessa.
+
+### 3.7 Moduuli 5: raportoija (`raportoija.py`)
+
+- Tuloste: `tiedosto:rivi:sarake: [varmuus/sääntö] viesti` ja kontekstirivi, jossa puuttuva
+  pilkku on `‸` ja ylimääräinen `[,]`.
+- Sarake osoittaa puuttuvan pilkun paikkaan (edellisen sanan perään) tai ylimääräiseen
+  pilkkuun.
+- Suodatus: `--min high|medium|low`, `--rule S1` (voi toistaa), `--tyyli`.
+- Yhteenveto stderriin: `Yhteensä N varoitusta: high=…, medium=…, low=…`.
 - Myöhemmin muita muotoja (esim. HTML, LibreOffice-kommentit).
 
 ### 3.8 Oikeinkirjoitus (myöhemmin, ei osa pilkkuputkea)
 
-- Oma komento, joka ajaa Voikko-tarkistuksen sana kerrallaan leipätekstistä; ehdotukset mukaan.
-- Kirjoitusvirhe (esim. *Han*) voi sekoittaa jäsentimen, mutta koska virheitä ei korjata
-  automaattisesti, tarkistuksen ajaminen ennen jäsennystä ei auta. Tulos on rinnakkainen
-  raportti.
+- Oma komento, joka ajaa Voikko-tarkistuksen sana kerrallaan leipätekstistä.
+- Kirjoitusvirhe voi sekoittaa jäsentimen, mutta koska virheitä ei korjata automaattisesti,
+  tarkistuksen ajaminen ennen jäsennystä ei auta. Tulos on rinnakkainen raportti.
 - Poikkeuslista (erisnimet, lainasanat: *Silkworth, Akron, Ebby* …) omassa tiedostossaan.
 
 ### 3.9 Hakemistorakenne
 
 ```
-~/pylkutus/
-  PLAN_PILKKU.md
-  pyproject.toml       # pytest-asetukset ja merkinnät (stanza, hidas)
-  .venv/
-  kokeet/              # Stanza-koe ja sen tulokset
+pylkutus/                      (repo: github.com/latexxi/pylkutus)
+  README.md, LICENSE (MIT), PLAN_PILKKU.md
+  pyproject.toml               # paketti, pytest-merkintä stanza
+  pylkuta                      # ajuri: .venv/bin/python -m pylkutus
   pylkutus/
-    tyypit.py          # dataclassit: Leipateksti, Token, Virke, Lause, Raja, Varoitus
+    __main__.py                # komentorivi
+    ajuri.py                   # lue, analysoi, dump
+    tyypit.py                  # Leipateksti, Token, Virke, Lause, Raja, Varoitus
     esikasittelija.py
-    jasennin.py
-    conllu.py          # CoNLL-U-luku ja -kirjoitus
+    jasennin.py, conllu.py
     lauseistaja.py
-    saannot/           # yksi moduuli sääntöryhmää kohden (s1.py, s2.py, r.py …)
-    saantotarkistin.py # sääntörekisteri ja ajo
+    saantotarkistin.py         # päätösten kokoaminen, varoitukset
+    saannot/
+      puuttuvat.py             # rajasäännöt
+      sanasto.py               # sanastosäännöt (S3)
+      ylimaaraiset.py          # V1, L1, A1/A2
+    sanastot.py                # sanalistat
     raportoija.py
-    sanastot.py        # konjunktiot, moniosaiset, ei-sidesanat, poikkeuslistat
-    lahtotaso.py       # sanalistaan perustuva vertailutarkistin (luku 5)
-    arviointi.py       # kultaisen standardin luku ja mittari
-    oikeinkirjoitus.py # myöhemmin
-  pylkuta              # ajuri
+    lahtotaso.py               # vanha pilkut.py -kääre ja sanalistalähtötaso
+    arviointi.py               # kultaisen standardin luku, mittari, komentorivi
   tests/
-    fixtures/          # pienet md-tiedostot ja jäädytetyt .conllu-tiedostot
-    saannot/           # esimerkkiparit luvun 1 taulukoista (oikein/väärin)
-  arviointi/           # kultainen standardi, synteettinen aineisto, mittaustulokset
+    fixtures/                  # pieni.md + odotettu tuloste, jäädytetyt V3-jäsennykset
+    saannot/test_esimerkit.py  # luvun 1 esimerkit
+    snapshot/                  # koko dokumentin välitulokset (ei repossa)
+  kokeet/                      # V3-koe ja tulokset, koko dokumentin jäsennys
+  arviointi/
+    tulokset.md                # mittaushistoria
+    valitse_otos.py
+    kulta/                     # merkityt otokset (ei repossa)
+  .cache/                      # jäsennysvälimuisti (ei repossa)
 ```
+
+Lähdedokumentin teksti (`tests/snapshot/`, `arviointi/kulta/`) on `.gitignore`:ssa, koska repo
+on julkinen. Testit, jotka tarvitsevat lähdedokumenttia, ohitetaan, jos sitä ei ole.
 
 ### 3.10 Järjestys
 
@@ -504,58 +535,77 @@ Toteutusvaiheet ja niiden testit: ks. luku 7.
 
 ## 4. Varmuusluokat ja tulostusmuoto
 
-Alustava luokitus, tarkennetaan mittausten perusteella:
+Varmuus kertoo, kuinka luotettava varoitus on. Toteutunut luokitus (3.6):
 
-- **high:** sanalistaan perustuva sääntö (tunnistus *helppo*), pakollinen pilkku.
-- **medium:** jäsennykseen perustuva sääntö (tunnistus *keski*), pakollinen pilkku.
-- **low:** tunnistus *vaikea*, ratkaisematon täydellisyys (3.5), rajatapaukset (esim. 1.4) ja
-  ylimääräiset pilkut, joita vain A/B-vertailu tukee.
+- **high:** sidesanaan perustuva S1 (*että, kun, jos* …) ja M1. Koko dokumentilla 14
+  varoitusta.
+- **medium:** jäsennykseen tai sanastoon perustuvat S2, S3, K1, R3 (täydellinen), R4, V5 sekä
+  ylimääräisten V1 ja L1. Koko dokumentilla 182.
+- **low:** R1, S6, S4 relatiivilauseen sisällä, loppurajat (S1e, S2a, K3), K1 rinnastuksen
+  jälkeen (1.4), R3 ratkaisematon, pitkä L1 sekä ylimääräiset pilkut `pakko=ei`-päätöksestä
+  medium-säännöstä. Koko dokumentilla 192.
 
-Alustavat tavoitteet: high-luokan tarkkuus (precision) vähintään 90 %, kaikkien luokkien yhteinen
-tarkkuus vähintään 70 %. Kattavuus (recall) raportoidaan, mutta sille ei aseteta alarajaa ennen
-lähtötason mittausta.
+`--min medium` antaa lyhyen ja tarkan listan; `low` sisältää R1:n, joka on yleisin oikea virhe
+mutta myös yleisin väärä hälytys (vajaa vai täydellinen lause).
+
+Tavoitteet ja toteuma: high-luokan tarkkuus vähintään 90 %, kaikkien luokkien tarkkuus
+vähintään 70 %. Koko dokumentin 40 varoituksen otoksessa tarkkuus 75–79 % (7.5).
 
 Tulostusmuoto: ks. 3.7.
 
 ## 5. Testiaineisto ja mittari
 
 **Aineistot**
-- **Yksikkötestit** (`tests/`): oikein/väärin-esimerkkiparit kustakin luvun 1 säännöstä.
-- **Synteettinen aineisto:** toimitettua suomenkielistä tekstiä, josta pilkut poistetaan;
-  mitataan, löytyvätkö ne takaisin. Ylimääräisiä pilkkuja varten pilkkuja lisätään
-  satunnaisiin kohtiin, jotka eivät ole lauserajoja. UD_Finnish-TDT:tä ja -FTB:tä ei käytetä,
-  koska Stanzan oletusmalli (`combined`) on opetettu molemmilla. Tarvitaan muuta toimitettua
-  asiatekstiä.
-- **Käsin merkitty otos:** noin 50 kappaletta `ratkaisu.md`:stä. Jokainen pilkkukohta ja
-  jokainen lauseraja merkitään: pakollinen pilkku puuttuu, ylimääräinen pilkku, valinnainen,
-  kunnossa.
+- **Yksikkötestit** (`tests/`): moduulikohtaiset testit, luvun 1 esimerkit
+  (`tests/saannot/test_esimerkit.py`: 25 oikein-muotoa ilman varoitusta, 14 väärin-muotoa
+  odotetulla varoituksella) ja päästä päähän -testi (`tests/fixtures/pieni.md`).
+- **Kultainen otos** (`arviointi/kulta/`, ei repossa): 50 kappaletta `ratkaisu.md`:stä
+  (siemen 2026, vähintään 200 merkkiä, `arviointi/valitse_otos.py`). Kappaleet 1–20 ovat
+  kehitysaineisto, 21–50 testiaineisto. Merkinnät ovat Clauden luonnos, käyttäjä ei ole vielä
+  tarkistanut niitä.
+- **Synteettinen aineisto** (ei vielä tehty): toimitettua tekstiä, josta pilkut poistetaan.
+  UD_Finnish-TDT:tä ja -FTB:tä ei voi käyttää, koska Stanzan oletusmalli on opetettu
+  molemmilla.
 
-**Mittarit**
+**Merkintätapa** (`arviointi.py`): `[+,]` pakollinen puuttuu, `[-,]` ylimääräinen (pilkun
+paikalla), `[?,]` valinnainen puuttuu, `[?-,]` olemassa oleva valinnainen; perään sääntö,
+esim. `[+,S3]`. `%`-rivit ovat kommentteja.
+
+**Mittarit** (`python -m pylkutus.arviointi -t pylkutus|vanha|sanalista -v kulta.txt`)
 - Tarkkuus ja kattavuus erikseen puuttuville ja ylimääräisille pilkuille, säännöittäin ja
-  varmuusluokittain.
-- Valinnaiset kohdat eivät ole virheitä kumpaankaan suuntaan.
+  varmuusluokittain. `-v` tulostaa väärät ja ohitetut kohdat kontekstin kanssa.
+- Valinnaiseen kohtaan osuva varoitus ei ole osuma eikä virhe.
 
-**Lähtötaso**
-- (a) vanha `pilkut.py`
-- (b) sanalistaan perustuva tarkistin: sidesana tai relatiivisana ilman edeltävää pilkkua,
-  poikkeuksina luvun 1.14 ei-sidesanat ja luvun 1.2 moniosaiset ilmaukset.
+**Lähtötasot** (`lahtotaso.py`)
+- (a) vanha `pilkut.py`: sen `check_line` ajetaan kappaleittain ja varoitus muunnetaan
+  offsetiksi (sääntö *loppupilkku* jätetään pois, koska se ei osoita paikkaa)
+- (b) sanalista: sidesana tai relatiivisana ilman edeltävää pilkkua, poikkeuksina 1.14 ja 1.2.
+
+Mittaushistoria: `arviointi/tulokset.md`.
 
 ## 6. Avoimet kysymykset
 
-- Varoitetaanko valinnaisista pilkuista (S1a, S2b, K2, M1, R1a, R3, V1a, V2, A1, A2)?
-  Ehdotus: ei varoiteta, tai varoitetaan vain erillisellä lipulla (`--tyyli`).
-- Toimiiko täydellisen ja vajaan lauseen päättely (3.5) Stanzan puilla? Selviää kokeessa
-  (vaihe V3, luku 7).
+Ratkaistut:
+- *Varoitetaanko valinnaisista pilkuista?* Ei oletuksena; `--tyyli` näyttää ne.
+- *Toimiiko täydellisen ja vajaan lauseen päättely?* Koelauseilla 5/5; koko dokumentilla R1:n
+  tarkkuus noin 80 %. Parannettu eksistentiaalilauseella, perfektin passiivilla ja
+  conj-ketjun subjektilla (3.5).
+- *Onko B hyödyllinen?* Ei puuttuvien pilkkujen etsinnässä (V3). B:n rajat eivät vaikuta
+  päätöksiin.
+
+Avoimet:
 - I6 (interjektiot), P4 (sekä–että, joko–tai) ja P6 (niin–kuin): ohjepankista ei löytynyt
-  suoraa ohjetta.
-- K1/K2: onko lauseen alku rinnastuskonjunktion jälkeen "virkkeen alku" (1.4)?
+  suoraa ohjetta. Ei toteutettu.
+- K1/K2: onko lauseen alku rinnastuskonjunktion jälkeen "virkkeen alku" (1.4)? Nyt K1 low.
+- L1: onko pitkän lauseenvastikkeen jälkeinen pilkku sallittu? Nyt low, kun vastike on yli 5
+  sanaa.
+- Subjektin ja predikaatin välinen pilkku (1.13: *Ainoa tapa …, on olla*): ei sääntöä.
+- Tekstiin upotetut nimet (sarakkeiden nimet: *Ketä vahingoitin*) tuottavat vääriä S2-varoituksia.
 - **Vaihtoehtoinen menetelmä: sekvenssiluokittelija.** Esim. FinBERT, joka ennustaa pilkun
-  todennäköisyyden jokaiseen tokenien väliin. Opetusdataa on rajattomasti (mikä tahansa
-  toimitettu teksti), ja malli antaa suoraan todennäköisyyden sekä puuttuvalle että
-  ylimääräiselle pilkulle. Ei valita nyt, koska se ei nimeä sääntöä (varoitukseen ei saa
-  sääntökoodia eikä ohjepankin viitettä) ja opetus vaatii datan valmistelua ja GPU-työtä.
-  Palataan, jos jäsennykseen perustuva tarkistin ei voita lähtötasoa. Myös yhdistelmä on
-  mahdollinen: malli ehdottaa, säännöt selittävät ja suodattavat.
+  todennäköisyyden jokaiseen tokenien väliin. Ei valittu, koska se ei nimeä sääntöä ja opetus
+  vaatii datan valmistelua ja GPU-työtä. Jäsennykseen perustuva tarkistin voitti lähtötason
+  (7.5), joten tarvetta ei nyt ole; yhdistelmä (malli ehdottaa, säännöt selittävät) on
+  mahdollinen jatkokehitys.
 
 ## 7. Toteutusvaiheet
 
@@ -592,38 +642,44 @@ class Leipateksti:
     teksti: str              # kappaleet erotettu rivillä "\n\n"
     alkuperainen: str        # lähdetiedoston sisältö
     kartta: list[int]        # leipätekstin merkki i -> alkuperäisen merkin indeksi
-    def rivi_sarake(self, i: int) -> tuple[int, int]: ...
+    kappaleet: list[tuple[int, int]]   # (alku, loppu) leipätekstissä
+    def rivi_sarake(self, i: int) -> tuple[int, int]: ...   # 1-pohjaiset
 
 @dataclass
 class Token:
-    i: int                   # indeksi virkkeessä, pilkut mukaan lukien (A)
+    i: int                   # indeksi virkkeen tokenilistassa
     teksti: str
-    alku: int                # offset leipätekstiin
-    loppu: int
+    alku: int; loppu: int    # offset leipätekstiin
     lemma: str; upos: str; feats: dict[str, str]
-    head: int; deprel: str   # head 0 = juuri
+    head: int; deprel: str   # head 1-pohjainen kuten CoNLL-U, 0 = juuri
 
 @dataclass
 class Virke:
     tokenit: list[Token]     # kaikki sanat paitsi pilkut; muut välimerkit ovat tokeneita
-    rako: list[str | None]   # rako[i] = "," jos pilkku tokenin i edellä, muuten None;
-                             # pituus len(tokenit) + 1
+    rako: list[str | None]   # rako[i] = "," jos pilkku tokenin i edellä; pituus len(tokenit) + 1
 
 @dataclass
 class Lause:
     paa: int; alku: int; loppu: int
     tyyppi: str              # paa | sivu | relatiivi | kysymys | rinnasteinen
+    deprel: str
     aloittaja: int | None    # mark-, cc-, relatiivi- tai kysymyssanan indeksi
     finiittinen: bool
-    taydellisyys: str        # taydellinen | vajaa | ratkaisematon
-    upotettu: bool; virkkeen_alussa: bool
+    taydellisyys: str        # taydellinen | vajaa | ratkaisematon (vain rinnasteiset)
+    upotettu: bool           # ylempi lause jatkuu tämän jälkeen
+    virkkeen_alussa: bool
+    projektiivinen: bool = True
+    r1a: bool = False        # 1./2. persoona tai passiivi: R1:n pilkku valinnainen
+    ylempi: int | None = None  # ylemmän lauseen pään indeksi
 
 @dataclass
 class Raja:
     rako: int                # tokenien rako-1 ja rako välissä
-    vasen: Lause; oikea: Lause
-    merkki: str | None
-    lahde: str               # A | B | AB
+    laji: str                # alku | loppu
+    lause: Lause             # lause, jonka alku tai loppu raja on
+    ylempi: Lause | None     # lause, jonka sisällä raja on
+    merkki: str | None       # "," tai None
+    lahde: str = "A"         # A | B | AB
 
 @dataclass
 class Varoitus:
@@ -634,12 +690,15 @@ class Varoitus:
     viesti: str
 ```
 
-Rajapinta on luonnos. Kentät tarkentuvat vaiheissa, mutta muutos kirjataan tähän.
+Tietotyypit vastaavat tiedostoa `pylkutus/tyypit.py` (2026-09-26).
 
 Muutos V5:ssä: vain pilkut siirretään rakoihin. Muut rajamerkit (ajatusviiva, sulkeet,
 kaksoispiste, puolipiste) jäävät tokeneiksi, jotta A:n ja B:n sanalistat ovat identtiset.
 A ja B jäsennetään samoista valmiiksi pilkotuista sanoista (tokenisointi ja MWT kerran,
 sitten virkejaon korjaus lyhennelistalla, sitten jäsennys).
+
+Muutos V6–V7:ssä: `Lause` sai kentät `deprel`, `r1a` ja `ylempi`; `Raja` sai kentän `laji`
+(alku/loppu), ja vasen/oikea lause korvattiin kentillä `lause` ja `ylempi`.
 
 ### 7.3 Vaiheet
 
@@ -919,7 +978,7 @@ V0 ─┬─ V1 ── V2 ──────────────────
 
 | Vaihe | Tila | Tulos |
 |---|---|---|
-| V0 | valmis | Stanza 1.14.0 + `fi/default` (combined) ladattu, `pytest`, `git init` |
+| V0 | valmis | Stanza 1.14.0 + `fi/default` (combined) ladattu, `pytest`; repo github.com/latexxi/pylkutus (julkinen, MIT) |
 | V1 | valmis (merkintä tarkistamatta) | `arviointi.py` + mittari; kultainen otos 1–20 ja 21–50 Clauden luonnoksena |
 | V2 | valmis | vanha `pilkut.py`: 80 % / 27 % testiotoksella; sanalista 100 % / 7 % (luku 2) |
 | V3 | valmis | `kokeet/tulokset.md`: hypoteesit vahvistuivat paitsi B neutraalina todistajana; Voikko korjaa Stanzan `Fin`-virheitä |
@@ -927,7 +986,7 @@ V0 ─┬─ V1 ── V2 ──────────────────
 | V5 | valmis | `jasennin.py`; virkejaon korjaus (lyhenteet, ison alkukirjaimen katkot: 2780 → 2702 virkettä); 235 s CPU:lla, välimuisti |
 | V6 | valmis | `lauseistaja.py`; käsintarkistus 30 virkettä: rajavirheitä 7 % |
 | V7 | ensimmäinen versio valmis | testiotos (puhdas mittaus): 89 % / 53 %, korjausten jälkeen 93 % / 93 % (ei puhdas); koko dokumentti 388 varoitusta, arvioitu tarkkuus 75–79 % |
-| V8 | valmis | `pylkuta`-ajuri, `raportoija.py`, päästä päähän -testi |
+| V8 | valmis | `pylkuta`-ajuri, `raportoija.py`, päästä päähän -testi; testejä yhteensä 132 |
 
 Toteutuksessa lisätyt säännöt ja muutokset suunnitelmaan (yksityiskohdat `arviointi/tulokset.md`):
 - **S3-sanastosääntö** (`saannot/sanasto.py`): kysymysverbi + kysymyssana ilman pilkkua.
@@ -935,6 +994,8 @@ Toteutuksessa lisätyt säännöt ja muutokset suunnitelmaan (yksityiskohdat `ar
 - **Ylimääräinen pilkku rajapäätöksestä:** jos rajan sääntö sanoo `ei` (S1b, S4, R2, V1) ja
   pilkku on paikalla, varoitetaan poistosta.
 - **Loppurajat (S1e, S2a, K3) aina `low`:** jänne hajoaa helposti puuttuvan pilkun takia.
+
+Menetelmän toteutunut kuvaus on luvussa 3, varmuusluokat luvussa 4.
 
 Seuraavaksi:
 1. Käyttäjä tarkistaa kultaiset merkinnät (`arviointi/kulta/otos_01_20.txt`, `otos_21_50.txt`).

@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Iterator
 
 from ..ajuri import Analyysi
-from ..sanastot import A1_A2, RINNASTUS_JA
+from ..sanastot import A1_A2
 
 Havainto = tuple[int, str, str, str]
 
@@ -48,20 +48,6 @@ def a1_a2_alkusana(x: Analyysi) -> Iterator[Havainto]:
     if tt[eka].teksti.lower() in A1_A2 and x.a.rako[eka + 1] and eka + 1 not in _rajat(x):
         yield (eka + 1, "A2" if tt[eka].teksti.lower().endswith("ksi") else "A1",
                "valinnainen", "high")
-
-
-def r2_vajaa(x: Analyysi) -> Iterator[Havainto]:
-    """R2: vajaan päälauseen edellä ja-sanan kohdalla ei pilkkua."""
-    for r in x.rajat:
-        l = r.lause
-        if (r.laji == "alku" and l.tyyppi == "rinnasteinen" and l.taydellisyys == "vajaa"
-                and r.merkki and x.a.tokenit[l.alku].teksti.lower() in RINNASTUS_JA
-                and r.lahde in ("A", "AB")):
-            # sivulauseen loppu samassa raossa oikeuttaa pilkun
-            if any(k.rako == r.rako and k.laji == "loppu" and k.lause.tyyppi != "rinnasteinen"
-                   for k in x.rajat):
-                continue
-            yield (r.rako, "R2", "ei", "low")
 
 
 # R2 ja muut rajapäätöksiin perustuvat: saantotarkistin (pakko=ei + pilkku paikalla)

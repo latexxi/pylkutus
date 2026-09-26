@@ -45,10 +45,26 @@ Vaatii Python 3.12:n, järjestelmän `libvoikko`-paketin (Ubuntu: `python3-libvo
 ./pylkuta tiedosto.md --rule S3        # yksi sääntö
 ./pylkuta tiedosto.md --tyyli          # myös valinnaiset pilkut
 ./pylkuta tiedosto.md --dump lauseet   # lausesulut tarkistusta varten
+./pylkuta tiedosto.md --dump rajat     # lauserajat ja niiden lähde (A/B)
 ```
 
 Ensimmäinen ajo jäsentää tekstin (noin 4 min 300 000 merkille CPU:lla); seuraavat ajot
 käyttävät välimuistia.
+
+## Tulokset
+
+Mitattu käsin merkittyä otosta vasten (2026-09-26), yksityiskohdat
+[`arviointi/tulokset.md`](arviointi/tulokset.md):
+
+| Tarkistin | Tarkkuus | Kattavuus |
+|---|---|---|
+| sanalista (lähtötaso) | 100 % | 7 % |
+| edellinen skripti | 80 % | 27 % |
+| pylkutus, ensimmäinen versio (puhdas testiotos) | 89 % | 53 % |
+
+Koko 300 000 merkin dokumentilla 388 varoitusta; 40 satunnaisen varoituksen käsiarviossa
+tarkkuus 75–79 %. Luotettavimmat säännöt: S3 (epäsuora kysymys), L1 (lauseenvastike), V1
+(*kuin*), K1 (*se, mitä*). Heikoin: R1 (onko *ja*-sanan jälkeinen lause täydellinen).
 
 ## Testit
 
