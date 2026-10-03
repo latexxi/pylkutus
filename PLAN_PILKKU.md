@@ -57,6 +57,8 @@ Relatiivisanat: *joka, mikä* ja niiden taivutusmuodot sekä
 | S2a | Päälauseen keskelle upotettu relatiivilause: pilkku molemmin puolin | Pelaajat, joiden nimiä ei mainittu, neuvottelevat. | kyllä | vaikea (loppupilkku) |
 | S2b | Korrelaatiton (itsenäinen) relatiivilause: pilkku valinnainen | Teen(,) mitä haluan. (vrt. Teen sitä, mitä haluan.) | valinnainen | keski |
 
+S2b tunnistetaan lauseistajassa (`Lause.vapaa`, `_vapaa()`): `ccomp/acl:relcl/advcl/csubj`-lause, jossa on *tahansa/hyvänsä*, edeltävä komparatiivi (*enemmän kuin haluat*) tai vapaalistan verbi (`VAPAA_RELATIIVIN_VERBIT`: *ottaa, antaa, tehdä* …). *sanoa* ja *pitää* on jätetty pois, koska ne tuottivat regression.
+
 Huom: suomessa relatiivilause erotetaan aina, eikä rajoittavalla ja selittävällä relatiivilauseella ole eroa kuten englannissa.
 *joten* on relatiivisana, joten pilkku kuuluu sen eteen.
 
@@ -114,7 +116,7 @@ joten se on uuden säännön mukaan oikein. Pilkkua ei ole pakko lisätä.
 | P1 | *mitä–sitä, milloin–milloin, toisaalta–toisaalta, yhtäältä–toisaalta, osaksi–osaksi*: pilkku osien väliin | Mitä korkeammalla aurinko on, sitä enemmän altistumme. | kyllä | helppo |
 | P2 | *paitsi–myös*: ei yleensä pilkkua | Hän on paitsi nopea myös ketterä. | valinnainen (yleensä ei) | helppo |
 | P3 | *saati*: rinnakkaisten ilmausten välissä ei pilkkua. Painokkaan lisäyksen edellä pilkku selventää | ei suuria saati kohtalokkaita / …, saati yöksi pihalle. | valinnainen | helppo |
-| P4 | *sekä–että, joko–tai*: rinnastus konjunktiolla, joten yleissäännön (S6) mukaan ei pilkkua lauseenjäsenten väliin. Kokonaisten päälauseiden välissä noudatetaan R1:tä **[ei tarkistettu]** | sekä kehon että mielen / Joko tulet nyt, tai jäät kotiin. | ei / kyllä | helppo / vaikea |
+| P4 | *sekä–että, joko–tai*: rinnastus konjunktiolla, joten yleissäännön (S6) mukaan ei pilkkua lauseenjäsenten väliin. Kokonaisten päälauseiden välissä noudatetaan R1:tä **[sekä … että tarkistetaan (P4 ei); joko–tai ei]** | sekä kehon että mielen / Joko tulet nyt, tai jäät kotiin. | ei / kyllä | helppo / vaikea |
 | P5 | *kuten X myös Y*, *samoin kuin X myös Y*: ei pilkkua | Kuten Suomessa myös Saksassa … | ei | helppo |
 | P6 | *niin–kuin* (rinnastava): ei pilkkua **[ei tarkistettu]** | niin Suomessa kuin Ruotsissa | ei | helppo |
 
@@ -123,6 +125,7 @@ joten se on uuden säännön mukaan oikein. Pilkkua ei ole pakko lisätä.
 | # | Sääntö | Esimerkki | Pakko | Tunnistus |
 |---|---|---|---|---|
 | V1 | Vertailevassa rakenteessa *kuin*-sanan edellä ei yleensä käytetä pilkkua, **myöskään silloin, kun kuin-jaksossa on verbi** | Poika juoksee kuin nuori hirvi. Todellisuus näyttää valoisammalta kuin hän uskalsi toivoa. | ei | helppo |
+| V1b | *niin/siten/samoin kuin* -vertaus: pilkku valinnainen (uusi sääntö 3.6:ssa; V1 `valinnainen`) | Hän toimi niin kuin muutkin. | valinnainen | helppo |
 | V1a | *kuin*-jakso irrallisena jälkilisäyksenä: pilkku valinnainen | Hän vaati huomiota(,) ikään kuin olisi kuuluisuus. | valinnainen | — |
 | V2 | *ennen kuin* päälauseen jäljessä: pilkku valinnainen. Päälauseen edellä: pilkku selvyyden vuoksi | Tule(,) ennen kuin sataa. / Ennen kuin lähdet, sammuta valot. | valinnainen / kyllä | keski |
 | V3 | *toisin kuin, samoin kuin, aivan kuin*: jos molemmat osat ovat kokonaisia lauseita, pilkku väliin | Toisin kuin monet luulevat, hän ei ole varakas. | kyllä | vaikea |
@@ -409,6 +412,9 @@ kopulalauseen (*on opettaja*) pää on partisiippi tai nomini. Voikko kumoaa Sta
   `r1a=True` (pilkku valinnainen)
 - subjekti löytyy `conj`-ketjun aiemmasta lauseesta → vajaa (*palasi … mutta jatkaa ja
   katkaisee*)
+- päänsana ei ole predikaatti (ei VERB/AUX eikä `cop`/`aux`-lasta, ei `ei`-apuverbiä) → vajaa
+- subjektin haku nousee head-ketjun juureen asti
+- `Clitic=Ko`-lause (*elänkö*) → `r1a=True`
 - muuten ratkaisematon.
 
 **Jänne.** Alipuun ensimmäinen ja viimeinen ei-välimerkkitoken. Epäjatkuva jänne
@@ -442,20 +448,23 @@ ylimääräisen pilkun varoitusta.
 
 | Tilanne | Päätös |
 |---|---|
-| alku, edellä `mark`/`cc` tai rinnastuskonjunktio | S1b `ei` |
+| alku, edellä `mark`/`cc` tai rinnastuskonjunktio (myös *joten*) | S1b `ei` |
+| alku/loppu, `Lause.vapaa` (S2b) | S2b `valinnainen` medium |
+| rako aloittavan lainausmerkin jälkeen | 1.15 `ei`; luettelolyhenteen (*jne, ym, yms, jms, tms*) kohdalla ei päätöstä |
 | alku, lause alkaa `cc`:llä (*ja jos ehdin*, *, mutta kun*) | ei päätöstä |
 | alku, *ennen kuin* | V2 `valinnainen` |
 | alku, moniosainen ilmaus lauseen alussa tai ennen `mark`:ia (*heti kun*) | M1 `kyllä` high; pilkku ilmauksen sisällä → `valinnainen`; rinnastuksen jälkeen M3 `ei` |
 | alku, `mark` *sillä* | R4 `kyllä` medium |
-| alku, `mark` *kuin* | V1 `ei` |
+| alku, `mark` *kuin* | V1 `ei`; edellä *niin/siten/samoin* → V1 `valinnainen` |
+| alku, `mark` *kuin*, edellä *sekä … että* -pari | P4 `ei` |
 | alku, `mark` *kuten* | V5 `kyllä` medium |
 | alku, hyvin lyhyt virke | S1a `valinnainen` |
 | alku, muu `mark` | S1 `kyllä` high |
 | alku, kysymys | S3 `kyllä` medium |
 | alku, relatiivi, edellä *se* | virkkeen alussa K2 `valinnainen`; rinnastuksen jälkeen K1 low (1.4); muuten K1 medium |
 | alku, relatiivi | S2 `kyllä` medium |
-| alku, rinnasteinen, ylempi sivulause | *ja/tai* S4 `ei` (relatiivilauseeseen liitetty, oma subjekti → R1 low); *mutta* R3; muu S6 low |
-| alku, rinnasteinen päälause | *sillä* R4 medium; *mutta/vaan* R3 (täydellinen medium, vajaa `valinnainen`); *ja/tai/eikä* vajaa R2 `ei`, `r1a` R1a `valinnainen`, muuten R1 `kyllä` low; ilman konjunktiota S6 low |
+| alku, rinnasteinen, ylempi sivulause | *ja/tai* S4 `ei` vain jos lause on `vajaa`, muuten `valinnainen` (relatiivilauseeseen liitetty, oma subjekti → R1 low); *mutta* R3; muu S6 low |
+| alku, rinnasteinen päälause | *sillä* R4 medium; *mutta/vaan* R3 (täydellinen medium, vajaa `valinnainen`); *ja/tai/eikä* vajaa R2 `ei` (*eikä*: `valinnainen`), `r1a` R1a `valinnainen`, muuten R1 `kyllä` low; ilman konjunktiota S6 low |
 | loppu, seuraava token välimerkki tai *ja/mutta* | ei päätöstä |
 | loppu | S1e / S2a / K3 `kyllä` low |
 

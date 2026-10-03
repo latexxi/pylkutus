@@ -61,6 +61,7 @@ class Lause:
     projektiivinen: bool = True
     r1a: bool = False        # 1./2. persoona tai passiivi: R1:n pilkku valinnainen
     ylempi: int | None = None  # ylemmän lauseen pään indeksi
+    vapaa: bool = False      # vapaasti viittaava lause (mitä haluat, mistä tahansa): S2b
 
 
 @dataclass

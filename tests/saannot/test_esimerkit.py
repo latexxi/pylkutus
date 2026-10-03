@@ -37,6 +37,22 @@ OIKEIN = [
     # S3
     "Kukaan ei tiedä, missä hän asuu.",
     "Kysyin, tuleeko hän.",
+    # S2b: vapaasti viittaava lause, pilkku valinnainen
+    "Ota mitä haluat ja jätä loput.",
+    "Hän etsi alkoholisteja mistä tahansa vain pystyi.",
+    "Yhteiskunta voi tehdä mitä haluaa kanssani.",
+    # eliptinen rinnastus ja yhteinen subjekti: ei R1-varoitusta
+    "Toveriseura syntyi ohjelmasta eikä päinvastoin.",
+    "Kun hän aloittaa syömisen, hän ei pysty lopettamaan ja jatkaa syömiskierteeseen.",
+    "Elänkö sopusoinnussa tämän Voiman kanssa vai elänkö päinvastoin?",
+    # eikä-vastakohta: pilkku sallittu
+    "Se oli meidän yhteinen tietomme, eikä vain yhden henkilön.",
+    # V1 (niin kuin), P1 (sekä … että), S1b (joten kun), jne., aloittava lainausmerkki
+    "Me teimme niin kuin Kolumbus.",
+    "Molemmat ovat helppoja sekä harjoitella että muistaa.",
+    "Se pätee kaikille, joten kun olet valmis, voit aloittaa.",
+    "Et voi tehdä neljättä askelta, ennen kuin olet tehnyt kolmannen jne.",
+    'Hän sanoi: "Ei kiitos, minua väsyttää."',
     # S4
     "Haluan työpaikan, joka sopii minulle ja jossa voin käyttää kykyjäni.",
     # R1, R2, R3, R4

@@ -54,3 +54,12 @@ KYSYMYSVERBIT = {
     "kuvailla", "tarkistaa", "arvioida", "harkita", "keskustella", "tarkastella", "havaita",
     "punnita", "kuulla", "aavistaa", "unohtaa", "tuntea",
 }
+
+# Vapaavalintaisuutta ilmaisevat sanat kysymyssanalauseessa (mistä tahansa vain pystyi): ei kysymys
+VAPAA_JALKISANAT = {"tahansa", "hyvänsä"}
+# Verbit, joiden objektina mitä-lause on yleensä vapaasti viittaava relatiivilause (S2b)
+VAPAA_RELATIIVIN_VERBIT = {
+    "ottaa", "jättää", "tehdä", "antaa", "saada", "tarjota", "syödä", "valita", "haluta",
+    "ostaa", "juoda", "tuoda", "viedä", "jakaa",
+}
+VAPAA_ALOITTAJAT = {"mitä", "mikä", "kuka", "ketä", "kenelle", "mihin", "missä", "mistä"}

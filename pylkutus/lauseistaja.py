@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from .sanastot import ALISTUS_MARK, KYSYMYSSANAT
+from .sanastot import (ALISTUS_MARK, KYSYMYSSANAT, VAPAA_ALOITTAJAT, VAPAA_JALKISANAT,
+                       VAPAA_RELATIIVIN_VERBIT)
 from .tyypit import Lause, Raja, Virke
 
 LAUSESUHTEET = {"root", "advcl", "ccomp", "acl:relcl", "conj", "parataxis", "acl", "xcomp",
@@ -117,6 +118,23 @@ def _tyyppi(v: Virke, paa: int, alku: int) -> str:
     return "sivu"
 
 
+def _vapaa(v: Virke, paa: int, alku: int, loppu: int) -> bool:
+    """S2b: vapaasti viittaava lause, ei epäsuora kysymys (mitä haluat, mistä tahansa vain pystyi)."""
+    d = v.tokenit[paa].deprel
+    if d not in ("ccomp", "acl:relcl", "advcl") and not d.startswith("csubj"):
+        return False
+    eka = v.tokenit[alku]
+    if eka.teksti.lower() not in VAPAA_ALOITTAJAT:
+        return False
+    if any(t.teksti.lower() in VAPAA_JALKISANAT for t in v.tokenit[alku + 1:loppu + 1]):
+        return True
+    ed = v.tokenit[alku - 1] if alku > 0 else None
+    if ed is not None and ed.feats.get("Degree") == "Cmp":
+        return True             # paljon paremmalla mitä alkoholi koskaan oli
+    yl = v.tokenit[v.tokenit[paa].head - 1] if v.tokenit[paa].head > 0 else None
+    return d in ("ccomp", "acl:relcl") and yl is not None and yl.lemma.lower() in VAPAA_RELATIIVIN_VERBIT
+
+
 def _aloittaja(v: Virke, alku: int) -> int | None:
     t = v.tokenit[alku]
     if t.deprel in ("mark", "cc") or t.feats.get("PronType") in ("Rel", "Int") \
@@ -153,8 +171,8 @@ def lauseista(v: Virke) -> tuple[list[Lause], list[Raja]]:
             deprel=v.tokenit[i].deprel, aloittaja=_aloittaja(v, alku),
             finiittinen=fin[i], taydellisyys="taydellinen", upotettu=False,
             virkkeen_alussa=alku == ensimmainen, projektiivinen=jatkuva,
-            r1a=passiivi or persoona in ("1", "2"),
-            ylempi=_ylempi_lause(v, i, paat))
+            r1a=passiivi or persoona in ("1", "2") or "Ko" in v.tokenit[i].feats.get("Clitic", ""),
+            ylempi=_ylempi_lause(v, i, paat), vapaa=_vapaa(v, i, alku, loppu))
 
     for i, l in lauseet.items():
         if l.ylempi is not None:
@@ -191,13 +209,17 @@ def _taydellisyys(v: Virke, l: Lause, lauseet: dict[int, Lause], lps) -> str:
         return "taydellinen"
     if l.r1a:
         return "taydellinen"
-    # yhteinen subjekti voi olla conj-ketjun alussa: hän palasi, mutta jatkaa ja katkaisee
-    ed = v.tokenit[l.paa].head - 1
+    # ei predikaattia: eliptinen rinnastus (eikä synti, eikä päinvastoin) ei ole oma päälauseensa
+    paa = v.tokenit[l.paa]
+    if paa.upos not in ("VERB", "AUX") and not any(
+            v.tokenit[c].deprel in ("cop", "aux") and v.tokenit[c].upos in ("VERB", "AUX")
+            and v.tokenit[c].lemma.lower() != "ei" for c in lps[l.paa]):
+        return "vajaa"
+    # yhteinen subjekti voi olla ylempänä ketjussa: hän ei pysty lopettamaan ja jatkaa
+    ed = paa.head - 1
     while ed >= 0:
         if _on_subjekti(v, ed, lps):
             return "vajaa"
-        if v.tokenit[ed].deprel not in ("conj", "parataxis"):
-            break
         ed = v.tokenit[ed].head - 1
     return "ratkaisematon"
 
