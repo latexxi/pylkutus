@@ -8,6 +8,7 @@ from .tyypit import Leipateksti
 
 OTSIKKO_MD = re.compile(r"^#{1,6}\s")
 LUETTELO = re.compile(r"^\s*(?:\d+\.|[-*+])\s+")
+TAULUKON_EROTIN = re.compile(r":?-{3,}:?")
 # Poistettavat merkinnät kappaleen sisältä. Poistetaan vain merkit, loput säilyvät.
 POISTETTAVAT = [
     ("span", re.compile(r"</?span[^>]*>")),
@@ -40,6 +41,46 @@ def _on_otsikon_kaltainen(rivi: str) -> bool:
     return len(s) < OTSIKON_MAKSIMIPITUUS and not VIRKERAJA.search(s)
 
 
+def _taulukon_solualueet(rivi: str) -> list[tuple[int, int]]:
+    """Markdown-taulukkorivin solujen rajat suhteessa alkuperäiseen riviin."""
+    alku = len(rivi) - len(rivi.lstrip())
+    loppu = len(rivi.rstrip())
+    if alku < loppu and rivi[alku] == "|":
+        alku += 1
+    if alku < loppu and rivi[loppu - 1] == "|":
+        loppu -= 1
+    solut = []
+    solu_alku = alku
+    for i in range(alku, loppu):
+        kenoviivoja = 0
+        j = i - 1
+        while j >= 0 and rivi[j] == "\\":
+            kenoviivoja += 1
+            j -= 1
+        if rivi[i] == "|" and kenoviivoja % 2 == 0:
+            solut.append((solu_alku, i))
+            solu_alku = i + 1
+    solut.append((solu_alku, loppu))
+    while solut and not rivi[solut[0][0]:solut[0][1]].strip():
+        solut.pop(0)
+    while solut and not rivi[solut[-1][0]:solut[-1][1]].strip():
+        solut.pop()
+    return solut
+
+
+def _on_taulukon_otsake(otsake: str, erotin: str) -> bool:
+    if not re.search(r"(?<!\\)\|", otsake) or not re.search(r"(?<!\\)\|", erotin):
+        return False
+    otsakesolut = _taulukon_solualueet(otsake)
+    erotinsolut = _taulukon_solualueet(erotin)
+    return (
+        bool(otsakesolut)
+        and len(otsakesolut) == len(erotinsolut)
+        and all(TAULUKON_EROTIN.fullmatch(erotin[a:b].strip())
+                for a, b in erotinsolut)
+    )
+
+
 def _siivoa(rivi: str) -> tuple[list[int], list[str]]:
     """Palauttaa säilyvien merkkien indeksit rivillä ja poistettujen merkintöjen syyt."""
     poistettu = [False] * len(rivi)
@@ -65,24 +106,53 @@ def _siivoa(rivi: str) -> tuple[list[int], list[str]]:
 
 def _lohkot(sisalto: str):
     """Jakaa tiedoston lohkoihin: peräkkäiset ei-tyhjät rivit, paitsi että #-otsikko ja
-    luettelon kohta ovat aina omia lohkojaan. Palauttaa (laji, [(nro, rivin_alku, rivi)])."""
-    lohko: list[tuple[int, int, str]] = []
+    luettelon kohta ovat aina omia lohkojaan. Taulukon solut ovat omia lohkojaan.
+    Palauttaa (laji, [(nro, rivin_alku, rivi)])."""
+    rivit = sisalto.split("\n")
+    rivien_alut = []
     alku = 0
-    for nro, rivi in enumerate(sisalto.split("\n"), 1):
-        rivin_alku = alku
+    for rivi in rivit:
+        rivien_alut.append(alku)
         alku += len(rivi) + 1
+
+    lohko: list[tuple[int, int, str]] = []
+    i = 0
+    while i < len(rivit):
+        rivi = rivit[i]
+        nro = i + 1
+        rivin_alku = rivien_alut[i]
+        if (i + 1 < len(rivit)
+                and _on_taulukon_otsake(rivi, rivit[i + 1])):
+            if lohko:
+                yield "kappale", lohko
+                lohko = []
+            yield "taulukon_otsikko", [(nro, rivin_alku, rivi)]
+            yield "taulukon_erotin", [(nro + 1, rivien_alut[i + 1], rivit[i + 1])]
+            i += 2
+            while i < len(rivit) and "|" in rivit[i] and rivit[i].strip():
+                for solu_alku, solu_loppu in _taulukon_solualueet(rivit[i]):
+                    solu = rivit[i][solu_alku:solu_loppu]
+                    if solu.strip():
+                        yield "taulukon_solu", [
+                            (i + 1, rivien_alut[i] + solu_alku, solu)
+                        ]
+                i += 1
+            continue
         if not rivi.strip():
             if lohko:
                 yield "kappale", lohko
                 lohko = []
+            i += 1
             continue
         if OTSIKKO_MD.match(rivi) or LUETTELO.match(rivi):
             if lohko:
                 yield "kappale", lohko
                 lohko = []
             yield ("otsikko" if OTSIKKO_MD.match(rivi) else "luettelo"), [(nro, rivin_alku, rivi)]
+            i += 1
             continue
         lohko.append((nro, rivin_alku, rivi))
+        i += 1
     if lohko:
         yield "kappale", lohko
 
@@ -95,8 +165,13 @@ def lue_md(sisalto: str) -> tuple[Leipateksti, list[Lokirivi]]:
     viimeinen = len(sisalto) - 1
 
     for laji, rivit in _lohkot(sisalto):
-        if laji == "otsikko":
-            loki.append(Lokirivi(rivit[0][0], "otsikko", rivit[0][2]))
+        if laji in ("otsikko", "taulukon_otsikko", "taulukon_erotin"):
+            syy = {
+                "otsikko": "otsikko",
+                "taulukon_otsikko": "taulukon otsake",
+                "taulukon_erotin": "taulukon erotin",
+            }[laji]
+            loki.append(Lokirivi(rivit[0][0], syy, rivit[0][2]))
             continue
         merkit: list[tuple[str, int]] = []
         lokirivit: list[Lokirivi] = []
@@ -118,9 +193,14 @@ def lue_md(sisalto: str) -> tuple[Leipateksti, list[Lokirivi]]:
         loki.extend(lokirivit)
         if kappaleet:
             # kappaleraja osoittaa edellisen kappaleen jälkeiseen rivinvaihtoon
-            raja = min(kartta[-1] + 1, viimeinen)
-            while raja < viimeinen and sisalto[raja] != "\n":
-                raja += 1
+            if laji == "taulukon_solu":
+                raja = sisalto.find("\n", rivit[0][1])
+                if raja < 0:
+                    raja = sisalto.rfind("\n", 0, rivit[0][1])
+            else:
+                raja = min(kartta[-1] + 1, viimeinen)
+                while raja < viimeinen and sisalto[raja] != "\n":
+                    raja += 1
             teksti.extend("\n\n")
             kartta.extend([raja, raja])
         kappaleen_alku = len(teksti)

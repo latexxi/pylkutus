@@ -3,6 +3,7 @@ import os
 import pytest
 
 from pylkutus.esikasittelija import lue_md, lue_teksti, tarkista_kartta
+from pylkutus.saantotarkistin import tarkista
 
 LAHDE = os.path.expanduser("~/Documents/ratkaisu/2026-09-14 ratkaisu.md")
 
@@ -60,6 +61,37 @@ def test_luettelo_omina_kappaleinaan():
     assert len(leipa.kappaleet) == 4
     i = leipa.teksti.index("Mikä oli r")
     assert leipa.rivi_sarake(i) == (4, 5)
+
+
+def test_taulukon_otsake_ohitetaan_ja_solut_erotetaan():
+    leipa, loki = md(
+        "Ennen.\n\n"
+        "| Mitä tein? | Loukkasin tai uhkasin |\n"
+        "| --- | --- |\n"
+        "| Menin kotiin. | Sitten söin. |\n\n"
+        "Jälkeen."
+    )
+    assert leipa.teksti == (
+        "Ennen.\n\nMenin kotiin.\n\nSitten söin.\n\nJälkeen."
+    )
+    assert len(leipa.kappaleet) == 4
+    assert leipa.rivi_sarake(leipa.teksti.index("Menin")) == (5, 3)
+    assert [r.syy for r in loki] == ["taulukon otsake", "taulukon erotin"]
+
+
+@pytest.mark.stanza
+def test_taulukon_solujen_valille_ei_synny_keinoista_lauseketta():
+    leipa, _ = md(
+        "| Sarake 1 | Sarake 2 |\n"
+        "| --- | --- |\n"
+        "| Kukaan ei tiedä | missä hän asuu. |\n"
+        "| Hän sanoi että palaa. | Toinen solu. |"
+    )
+    varoitukset = tarkista(leipa)
+    assert [
+        (v.saanto, v.toimenpide, leipa.teksti[v.alku:].lstrip(", ").split()[0])
+        for v in varoitukset
+    ] == [("S1", "lisaa", "että")]
 
 
 def test_muistiinpano_poistetaan():
